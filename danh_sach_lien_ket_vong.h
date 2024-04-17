@@ -5,12 +5,12 @@ typedef struct node
 {
     SV data;
     node *pNext;
-} NODE;
-typedef NODE *pNODE;
+} NODE_VONG;
+typedef NODE_VONG *pNODE_VONG;
 
 typedef struct listVong
 {
-    pNODE pTail; // Con tro pTail tham chiếu đến phần tử cuối cùng của danh sách
+    pNODE_VONG pTail; // Con tro pTail tham chiếu đến phần tử cuối cùng của danh sách
 } LIST_VONG;
 
 // ----------------- tu them

@@ -4,13 +4,13 @@ typedef struct node
 {
     SV data;
     node *pNext;
-} NODE;
+} NODE_DON;
 
-typedef NODE *pNODE;
+typedef NODE_DON *pNODE_DON;
 
 typedef struct listDon
 {
-    pNODE pHead;
+    pNODE_DON pHead;
 } LIST_DON;
 
 // ---------------------------------  tu them

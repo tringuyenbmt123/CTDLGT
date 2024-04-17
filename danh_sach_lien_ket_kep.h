@@ -6,13 +6,13 @@ typedef struct node
     SV data;
     node *pNext;
     node *pPrev;
-} NODE;
-typedef NODE *pNODE;
+} NODE_KEP;
+typedef NODE_KEP *pNODE_KEP;
 
 typedef struct listKep
 {
-    pNODE pHead;
-    pNODE pTail;
+    pNODE_KEP pHead;
+    pNODE_KEP pTail;
 } LIST_KEP;
 
 // ---------------------------------  tu them

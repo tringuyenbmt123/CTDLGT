@@ -4,6 +4,8 @@
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
 
+
+// anh tris check push lene nhen
 // ------------------------------ tu them---------------------------
 pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
 {

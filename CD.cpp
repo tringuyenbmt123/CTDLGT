@@ -5,7 +5,7 @@
 #include "nhapXuatSinhVien.h"
 
 
-fsdfsdfsdfsdfsdferbtrgsegrs
+// anh tris check push lene nhen
 // ------------------------------ tu them---------------------------
 pNODE khoiTaoNodeDon(SV sv) // ----------- ĐƠN
 {

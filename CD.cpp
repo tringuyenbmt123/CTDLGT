@@ -4,9 +4,7 @@
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
 
-// Phần include thêm tiếng việt
-#include <io.h>
-#include <fcntl.h>
+
 
 // ------------------------------ tu them---------------------------
 pNODE khoiTaoNodeDon(SV sv) // ----------- ĐƠN
@@ -267,11 +265,9 @@ void themSinhVienVaoMang(SV LIST_MANG[], int &soSinhVien, SV &sv)
 int main()
 {
 
-    // Thêm setmode gõ tiếng việt
-    _setmode(_fileno(stdin), _O_U16TEXT);
-    _setmode(_fileno(stdout), _O_U16TEXT);
-
-    // 
 
     return 0;
 }
+
+
+/// ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

@@ -4,7 +4,6 @@
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
 
-
 // anh tris check push lene nhen
 // ------------------------------ tu them---------------------------
 pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
@@ -94,6 +93,31 @@ int Binary_Search(SV listMang[], int left, int right, const T &x, const string &
     }
 }
 
+// Hàm cho người dùng chọn muốn đảo ngược tên
+void chonDaoNguocTen(void *list, const char *type)
+{
+    int lc = 0;
+    cout << "\n\t======================= ";
+    cout << "\n\t -- Bạn có muốn đảo ngược tên các sinh viên vừa tìm được không ? ";
+    cout << "\n\t 1. Có.";
+    cout << "\n\t 2. Không.";
+    cout << "\n\t======================= ";
+    cout << "\n\n\t - Nhap lua chon: ";
+    cin >> lc;
+
+    switch (lc)
+    {
+    case 1:
+        xuatDanhSachVoiDaoNguocTen(list, type, 0, 0);
+        break;
+    case 2:
+        xuatDanhSach(list, type, 0, 0);
+        break;
+    default:
+        break;
+    }
+}
+
 void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
 {
     int soLuongSinhVien = sizeof(LIST_MANG) / sizeof(LIST_MANG[0]);
@@ -108,7 +132,6 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
         cout << "\n\t  3. Tim theo ten.";
         cout << "\n\t  4. Tim theo lop.";
         cout << "\n\t  5. Tim theo diem.";
-
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> lc;
@@ -122,10 +145,10 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
             // tìm
-            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, "456", "maSV");
+            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, mssvCanTim, "maSV");
             if (result_str != -1)
             {
-                cout << "Found at index: " << result_str << endl;
+                chonDaoNguocTen(LIST_MANG, "mang");
             }
             else
             {
@@ -140,6 +163,16 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap ho sinh vien can tim : ";
             string hoCanTim = "";
             getline(cin, hoCanTim);
+            // tìm
+            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
+            if (result_str != -1)
+            {
+                chonDaoNguocTen(LIST_MANG, "mang");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -149,6 +182,16 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap ten sinh vien can tim : ";
             string tenCanTim = "";
             getline(cin, tenCanTim);
+            // tìm
+            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, tenCanTim, "ten");
+            if (result_str != -1)
+            {
+                chonDaoNguocTen(LIST_MANG, "mang");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -158,6 +201,16 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap lop sinh vien can tim : ";
             string lopCanTim = "";
             getline(cin, lopCanTim);
+            // tìm
+            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, lopCanTim, "lop");
+            if (result_str != -1)
+            {
+                chonDaoNguocTen(LIST_MANG, "mang");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -166,6 +219,16 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap diem sinh vien can tim : ";
             float diemCanTim;
             cin >> diemCanTim;
+            // tìm
+            int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
+            if (result_str != -1)
+            {
+                chonDaoNguocTen(LIST_MANG, "mang");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 

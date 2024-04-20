@@ -5,6 +5,11 @@
 #include <string>
 #include<iomanip>
 #include <stdexcept> // thư viện dùng cho template
+#include<windows.h>
+#include<algorithm>
+#include <time.h>
+#include <chrono>
+
 using namespace std;
 enum class Field { MaSV, Ho, Ten, Lop, Diem };
 

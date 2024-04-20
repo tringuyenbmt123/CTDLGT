@@ -48,6 +48,36 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
 
 // ---------------------------- CODE CHÍNH ------------------------------
 
+// hàm hiện thị thời gian
+void hienThoiGian1() // KO THỂ THAY ĐỔI đơn vị
+{
+    clock_t begin = clock(); // ghi lại thời gian đầu
+
+    clock_t end = clock(); // ghi lại thời gian lúc sau
+    cout << "Time run: " << (float)(end - begin) / CLOCKS_PER_SEC << " s" << endl;
+}
+
+void hienThoiGian2() // có thể thay đổi milis/micros /minute
+{
+    auto start = chrono::high_resolution_clock::now(); // ghi lại thời gian đầu
+    auto end = chrono::high_resolution_clock::now();   // ghi lại thời gian lúc sau
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+    cout << "Time run: " << duration.count() << " microseconds" << endl;
+}
+// hàm đổi màu chữ
+void SET_COLOR(int color)
+{
+    WORD wColor;
+
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (color & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+}
+
 // sắp xếp
 
 // Hàm tìm kiếm nhị phân

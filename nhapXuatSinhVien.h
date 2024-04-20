@@ -113,8 +113,7 @@ string reverseString(string &str)
 void xuatDaoNguocTen(SV sv, int index)
 {
     if (index == 0)
-    {
-        inTieuDe();
+    {inTieuDe();
     }
     cout << setfill(' ');
     cout << setw(25) << left << reverseString(sv.ten) << " " << reverseString(sv.ho);
@@ -173,5 +172,3 @@ void xuatDanhSachVoiDaoNguocTen(void *list, const char *type, int index, int soL
         printf("Loai danh sach khong hop le.\n");
     }
 }
-
-

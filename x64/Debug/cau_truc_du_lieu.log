@@ -1,0 +1,5 @@
+﻿mang.obj : error LNK2005: "void __cdecl nhapThongTinSinhVien(struct SV &)" (?nhapThongTinSinhVien@@YAXAEAUSV@@@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl themSinhVienMang(struct SV * const,int &)" (?themSinhVienMang@@YAXQEAUSV@@AEAH@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl xuatSinhVienMang(struct SV * const,int)" (?xuatSinhVienMang@@YAXQEAUSV@@H@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl xuatThongTinSinhVien(struct SV const &)" (?xuatThongTinSinhVien@@YAXAEBUSV@@@Z) already defined in CD.obj
+C:\Users\ADMIN\ctdl\x64\Debug\cau_truc_du_lieu.exe : fatal error LNK1169: one or more multiply defined symbols found

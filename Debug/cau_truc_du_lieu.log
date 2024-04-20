@@ -1,0 +1,10 @@
+﻿  CD.cpp
+C:\Users\ADMIN\ctdl\CD.cpp(6,1): warning C4005: 'max': macro redefinition
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(193,1): message : see previous definition of 'max'
+  mang.h
+  Generating Code...
+mang.obj : error LNK2005: "void __cdecl nhapThongTinSinhVien(struct SV &)" (?nhapThongTinSinhVien@@YAXAAUSV@@@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl themSinhVienMang(struct SV * const,int &)" (?themSinhVienMang@@YAXQAUSV@@AAH@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl xuatSinhVienMang(struct SV * const,int)" (?xuatSinhVienMang@@YAXQAUSV@@H@Z) already defined in CD.obj
+mang.obj : error LNK2005: "void __cdecl xuatThongTinSinhVien(struct SV const &)" (?xuatThongTinSinhVien@@YAXABUSV@@@Z) already defined in CD.obj
+C:\Users\ADMIN\ctdl\Debug\cau_truc_du_lieu.exe : fatal error LNK1169: one or more multiply defined symbols found

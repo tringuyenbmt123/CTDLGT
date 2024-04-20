@@ -1,6 +1,21 @@
 #pragma once
 
-#include "struct_sinh_vien.h"
-#define max 10000
 
-SV LIST_MANG[max]; // THAY DOI LIST -> LIST_MANG
+#include "nhapXuatSinhVien.h"
+
+
+void themSinhVienMang(SV a[], int &soLuongSinhVienMang)
+{
+
+	nhapThongTinSinhVien(a[soLuongSinhVienMang]);
+    soLuongSinhVienMang++;
+}
+
+void xuatSinhVienMang(SV a[], int &soLuongSinhVienMang)
+{
+    for(int i=0;i<soLuongSinhVienMang;i++)
+    {
+        xuatThongTinSinhVien(a[i]) ;
+        cout << endl;
+    }
+}

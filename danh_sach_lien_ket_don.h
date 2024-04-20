@@ -1,21 +1,21 @@
 #pragma once
 #include "struct_sinh_vien.h"
-typedef struct node
+typedef struct node_Don
 {
     SV data;
-    node *pNext;
+    node_Don*pNext_Don;
 } NODE_DON;
 
 typedef NODE_DON *pNODE_DON;
 
 typedef struct listDon
 {
-    pNODE_DON pHead;
+    pNODE_DON pHead_Don;
 } LIST_DON;
 
 // ---------------------------------  tu them
 
 void khoitaoDSLKDon(LIST_DON &listDon)
 {
-    listDon.pHead = NULL;
+    listDon.pHead_Don = NULL;
 }

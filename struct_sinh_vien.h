@@ -1,8 +1,8 @@
 #pragma once
 
-
 #include <iostream>
 #include <string>
+#include<string.h>
 #include<iomanip>
 #include <stdexcept> // thư viện dùng cho template
 #include<windows.h>
@@ -10,17 +10,18 @@
 #include <time.h>
 #include <chrono>
 
-using namespace std;
-enum class Field { MaSV, Ho, Ten, Lop, Diem };
 
-typedef struct sinhVien
+
+using namespace std;
+
+ struct SV
 {
+    string maSV;
     string ho;
     string ten;
-    string maSV;
-    float diem;
     string lop;
-} SINHVIEN;
+    float diem;
+} ;
 
-typedef SINHVIEN SV;
+
 

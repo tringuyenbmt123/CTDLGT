@@ -3,8 +3,8 @@
 #include "danh_sach_lien_ket_vong.h"
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
-
-// anh tris check push lene nhen
+#define max 10000
+SV LIST_MANG[max]; // THAY DOI LIST -> LIST_MANG
 // ------------------------------ tu them---------------------------
 pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
 {
@@ -14,7 +14,7 @@ pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
         exit(1);
     }
     p->data = sv;
-    p->pNext = NULL;
+    p->pNext_Don = NULL;
 
     return p;
 }
@@ -27,8 +27,8 @@ pNODE_KEP khoiTaoNodeKep(SV sv) // ------------ kép
         exit(1);
     }
     p->data = sv;
-    p->pNext = NULL;
-    p->pPrev = NULL;
+    p->pNext_Kep = NULL;
+    p->pPrev_Kep = NULL;
 
     return p;
 }
@@ -41,48 +41,20 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
         exit(1);
     }
     p->data = sv;
-    p->pNext = NULL;
+    p->pNext_Vong = NULL;
 
     return p;
 }
 
-// ---------------------------- CODE CHÍNH ------------------------------
-
-// hàm hiện thị thời gian
-void hienThoiGian1() // KO THỂ THAY ĐỔI đơn vị
+// ------------------------------------
+enum class Field
 {
-    clock_t begin = clock(); // ghi lại thời gian đầu
-
-    clock_t end = clock(); // ghi lại thời gian lúc sau
-    cout << "Time run: " << (float)(end - begin) / CLOCKS_PER_SEC << " s" << endl;
-}
-
-void hienThoiGian2() // có thể thay đổi milis/micros /minute
-{
-    auto start = chrono::high_resolution_clock::now(); // ghi lại thời gian đầu
-    auto end = chrono::high_resolution_clock::now();   // ghi lại thời gian lúc sau
-    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
-    cout << "Time run: " << duration.count() << " microseconds" << endl;
-}
-// hàm đổi màu chữ
-void SET_COLOR(int color)
-{
-    WORD wColor;
-
-    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
-    {
-        wColor = (csbi.wAttributes & 0xF0) + (color & 0x0F);
-        SetConsoleTextAttribute(hStdOut, wColor);
-    }
-}
-
-// sắp xếp
-
-// Hàm tìm kiếm nhị phân
-// ---- > mảng :
-
+    MaSV,
+    Ho,
+    Ten,
+    Lop,
+    Diem
+};
 template <typename T>
 T getValue(const SV &sv, const string &field)
 {
@@ -94,8 +66,21 @@ T getValue(const SV &sv, const string &field)
         return sv.ten;
     if (field == "lop")
         return sv.lop;
-    if (field == "diem")
-        return sv.diem;
+    //    if (field == "diem")
+    //        return sv.diem;
+    throw invalid_argument("Field name is invalid");
+}
+
+string getValue(const SV &sv, const string &field)
+{
+    if (field == "maSV")
+        return sv.maSV;
+    if (field == "ho")
+        return sv.ho;
+    if (field == "ten")
+        return sv.ten;
+    if (field == "lop")
+        return sv.lop;
     throw invalid_argument("Field name is invalid");
 }
 
@@ -107,7 +92,7 @@ int Binary_Search(SV listMang[], int left, int right, const T &x, const string &
         return -1;
     }
     int mid = (left + right) / 2;
-    T midValue = getValue<T>(listMang[mid], input);
+    string midValue = getValue(listMang[mid], input);
 
     if (midValue == x)
     {
@@ -122,35 +107,10 @@ int Binary_Search(SV listMang[], int left, int right, const T &x, const string &
         return Binary_Search(listMang, left, mid - 1, x, input);
     }
 }
-
-// Hàm cho người dùng chọn muốn đảo ngược tên
-void chonDaoNguocTen(void *list, const char *type)
+//----------------
+void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- MẠNG
 {
-    int lc = 0;
-    cout << "\n\t======================= ";
-    cout << "\n\t -- Bạn có muốn đảo ngược tên các sinh viên vừa tìm được không ? ";
-    cout << "\n\t 1. Có.";
-    cout << "\n\t 2. Không.";
-    cout << "\n\t======================= ";
-    cout << "\n\n\t - Nhap lua chon: ";
-    cin >> lc;
 
-    switch (lc)
-    {
-    case 1:
-        xuatDanhSachVoiDaoNguocTen(list, type, 0, 0);
-        break;
-    case 2:
-        xuatDanhSach(list, type, 0, 0);
-        break;
-    default:
-        break;
-    }
-}
-
-void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
-{
-    int soLuongSinhVien = sizeof(LIST_MANG) / sizeof(LIST_MANG[0]);
     int lc;
     while (true)
     {
@@ -174,11 +134,13 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap ma sinh vien can tim : ";
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
-            // tìm
+
+            
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, mssvCanTim, "maSV");
             if (result_str != -1)
             {
-                chonDaoNguocTen(LIST_MANG, "mang");
+                xuatThongTinSinhVien(LIST_MANG[result_str]);
+                system("pause");
             }
             else
             {
@@ -193,11 +155,11 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             cout << "\n\tNhap ho sinh vien can tim : ";
             string hoCanTim = "";
             getline(cin, hoCanTim);
-            // tìm
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
             if (result_str != -1)
             {
-                chonDaoNguocTen(LIST_MANG, "mang");
+                xuatThongTinSinhVien(LIST_MANG[result_str]);
+                system("pause");
             }
             else
             {
@@ -213,15 +175,7 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             string tenCanTim = "";
             getline(cin, tenCanTim);
             // tìm
-            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, tenCanTim, "ten");
-            if (result_str != -1)
-            {
-                chonDaoNguocTen(LIST_MANG, "mang");
-            }
-            else
-            {
-                cout << "Not found" << endl;
-            }
+
             break;
         }
 
@@ -232,34 +186,26 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
             string lopCanTim = "";
             getline(cin, lopCanTim);
             // tìm
-            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, lopCanTim, "lop");
-            if (result_str != -1)
-            {
-                chonDaoNguocTen(LIST_MANG, "mang");
-            }
-            else
-            {
-                cout << "Not found" << endl;
-            }
+
             break;
         }
 
         case 5:
         {
-            cout << "\n\tNhap diem sinh vien can tim : ";
-            float diemCanTim;
-            cin >> diemCanTim;
-            // tìm
-            int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
-            if (result_str != -1)
-            {
-                chonDaoNguocTen(LIST_MANG, "mang");
-            }
-            else
-            {
-                cout << "Not found" << endl;
-            }
-            break;
+            // cout << "\n\tNhap diem sinh vien can tim : ";
+            // float diemCanTim;
+            // cin >> diemCanTim;
+            //// tìm
+            // int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
+            // if (result_str != -1)
+            //{
+            //    // chonDaoNguocTen(LIST_MANG, "mang");
+            // }
+            // else
+            //{
+            //     cout << "Not found" << endl;
+            // }
+            // break;
         }
 
         default:
@@ -267,236 +213,20 @@ void timKiemSinhVienMang(SV LIST_MANG[]) //  ---------- MẠNG
         }
         system("pause");
     }
-}
-
-void timKiemSinhVienDanhSachLkDon(LIST_DON listDon) //  ---------- ĐƠN
-{
-
-    int lc;
-    while (true)
-    {
-        system("cls");
-        cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
-        cout << "\t======================= MENU =======================";
-        cout << "\n\t  1. Tim theo ma sinh vien.";
-        cout << "\n\t  2. Tim theo ho.";
-        cout << "\n\t  3. Tim theo ten.";
-        cout << "\n\t  4. Tim theo lop.";
-        cout << "\n\t  5. Tim theo diem.";
-
-        cout << "\n\t======================= END =======================";
-        cout << "\n\n\t - Nhap lua chon: ";
-        cin >> lc;
-
-        switch (lc)
-        {
-        case 1:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ma sinh vien can tim : ";
-            string mssvCanTim = "";
-            getline(cin, mssvCanTim);
-            break;
-        }
-
-        case 2:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ho sinh vien can tim : ";
-            string hoCanTim = "";
-            getline(cin, hoCanTim);
-            break;
-        }
-
-        case 3:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ten sinh vien can tim : ";
-            string tenCanTim = "";
-            getline(cin, tenCanTim);
-            break;
-        }
-
-        case 4:
-        {
-            cin.ignore();
-            cout << "\n\tNhap lop sinh vien can tim : ";
-            string lopCanTim = "";
-            getline(cin, lopCanTim);
-            break;
-        }
-
-        case 5:
-        {
-            cout << "\n\tNhap diem sinh vien can tim : ";
-            float diemCanTim;
-            cin >> diemCanTim;
-            break;
-        }
-
-        default:
-            break;
-        }
-        system("pause");
-    }
-}
-
-void timKiemSinhVienDanhSachLkVong(LIST_VONG listVong) // --------- VÒNG
-{
-    int lc;
-    while (true)
-    {
-        system("cls");
-        cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
-        cout << "\t======================= MENU =======================";
-        cout << "\n\t  1. Tim theo ma sinh vien.";
-        cout << "\n\t  2. Tim theo ho.";
-        cout << "\n\t  3. Tim theo ten.";
-        cout << "\n\t  4. Tim theo lop.";
-        cout << "\n\t  5. Tim theo diem.";
-
-        cout << "\n\t======================= END =======================";
-        cout << "\n\n\t - Nhap lua chon: ";
-        cin >> lc;
-
-        switch (lc)
-        {
-        case 1:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ma sinh vien can tim : ";
-            string mssvCanTim = "";
-            getline(cin, mssvCanTim);
-            break;
-        }
-
-        case 2:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ho sinh vien can tim : ";
-            string hoCanTim = "";
-            getline(cin, hoCanTim);
-            break;
-        }
-
-        case 3:
-        {
-            cin.ignore();
-            cout << "\n\tNhap ten sinh vien can tim : ";
-            string tenCanTim = "";
-            getline(cin, tenCanTim);
-            break;
-        }
-
-        case 4:
-        {
-            cin.ignore();
-            cout << "\n\tNhap lop sinh vien can tim : ";
-            string lopCanTim = "";
-            getline(cin, lopCanTim);
-            break;
-        }
-
-        case 5:
-        {
-            cout << "\n\tNhap diem sinh vien can tim : ";
-            float diemCanTim;
-            cin >> diemCanTim;
-            break;
-        }
-
-        default:
-            break;
-        }
-        system("pause");
-    }
-}
-
-// Hàm thêm vào cuối DSLK Dơn
-void themVaoCuoiDSLKDon(LIST_DON &listDon, pNODE_DON p)
-{
-    if (listDon.pHead == NULL)
-    {
-        listDon.pHead = p;
-    }
-    else
-    {
-        pNODE_DON temp = listDon.pHead;
-        while (temp->pNext != NULL)
-        {
-            temp = temp->pNext;
-        }
-        temp->pNext = p;
-    }
-}
-
-// Hàm thêm vào cuối DSLK Vòng
-void themVaoCuoiDSLKVong(LIST_VONG &listVong, pNODE_VONG p)
-{
-    // Danh sach rong
-    if (listVong.pTail == NULL)
-    {
-        listVong.pTail = p;
-        p->pNext = p; // Khi danh sách rỗng, pNext của phần tử đầu tiên trỏ lại chính nó
-    }
-    else
-    {
-        p->pNext = listVong.pTail->pNext; // Liên kết phần tử mới với phần tử đầu tiên
-        listVong.pTail->pNext = p;        // Liên kết phần tử cuối cùng với phần tử mới
-        listVong.pTail = p;               // Cập nhật pTail để trỏ đến phần tử mới
-    }
-}
-
-// Hàm thêm vào cuối DSLK kép
-void themVaoCuoiDSLKKep(LIST_KEP &listKep, pNODE_KEP p)
-{
-    // Danh sach rong
-    if (listKep.pHead == NULL)
-    {
-        listKep.pHead = listKep.pTail = p;
-    }
-    else
-    {
-        listKep.pTail->pNext = p;
-        p->pPrev = listKep.pTail;
-        listKep.pTail = p;
-    }
-}
-
-void themSinhVienDSLKDon(LIST_DON &listDon)
-{
-    cout << "- Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
-    pNODE_DON p = khoiTaoNodeDon(sv);
-    themVaoCuoiDSLKDon(listDon, p);
-}
-
-void themSinhVienDSLKVong(LIST_VONG &listVong)
-{
-    cout << "- Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
-    pNODE_VONG p = khoiTaoNodeVong(sv);
-    themVaoCuoiDSLKVong(listVong, p);
-}
-
-void themSinhVienDSLKKep(LIST_KEP &listKep)
-{
-    cout << "- Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
-    pNODE_KEP p = khoiTaoNodeKep(sv);
-    themVaoCuoiDSLKKep(listKep, p);
-}
-
-void themSinhVienVaoMang(SV LIST_MANG[], int &soSinhVien, SV &sv)
-{
-    cout << "- Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
-    LIST_MANG[soSinhVien++] = sv;
 }
 
 int main()
 {
+    // test chuong trinh
+    SV listMang[7] = {{"123", "Hung", "An", "12A", 8.5},
+                      {"456", "Le", "Binh", "12B", 7.0},
+                      {"111", "Nguyen", "Binh", "19B", 9.0},
+                      {"222", "Tinh", "Binh", "18B", 8.0},
+                      {"333", "La", "Binh", "15B", 7.0},
+                      {"444", "Tinh", "Binh", "13B", 5.0},
+                      {"789", "Nguyen", "Cuong", "11C", 8.1}};
 
+    timKiemSinhVienMang(listMang, 7);
     return 0;
 }
 

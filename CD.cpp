@@ -1,8 +1,8 @@
 ﻿#include <sstream>
 
-#include "dslk_don.h"
-#include "dslk_kep.h"
-#include "dslk_vong.h"
+#include "danh_sach_lien_ket_don.h"
+#include "danh_sach_lien_ket_kep.h"
+#include "danh_sach_lien_ket_vong.h"
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
 
@@ -253,3 +253,5 @@ int main()
     timKiemSinhVienMang(listMang, 7);
     return 0;
 }
+
+// Comand nday

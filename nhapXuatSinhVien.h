@@ -2,6 +2,7 @@
 
 #include "structSinhVien.h"
 #include <string.h>
+#include <algorithm>
 
 SV nhapThongTinSinhVien()
 {
@@ -17,8 +18,6 @@ SV nhapThongTinSinhVien()
     cout << "\n\t- Nhap ten SV: ";
     getline(cin, sv.ten);
 
-
-
     cout << "\n\t- Nhap lop cua SV: ";
     getline(cin, sv.lop);
 
@@ -27,7 +26,6 @@ SV nhapThongTinSinhVien()
 
     return sv;
 }
-
 
 // Hàm in tiêu đề
 void inTieuDe()
@@ -40,12 +38,8 @@ void inTieuDe()
     cout << setw(90) << "-" << endl;
 }
 
-void xuat(SV sv, int index)
+void xuat(SV sv)
 {
-    if (index == 0)
-    {
-        inTieuDe();
-    }
     cout << setfill(' ');
     cout << setw(22) << left << sv.maSV;
     cout << setw(0) << left << sv.ho << " " << sv.ten;
@@ -54,19 +48,18 @@ void xuat(SV sv, int index)
     cout << setw(10) << left << sv.diem << endl;
 }
 
-void themSinhVienMang(SV sv[], int& soLuongSinhVienMang)
+void themSinhVienMang(SV sv[], int &soLuongSinhVienMang)
 {
 
     sv[soLuongSinhVienMang] = nhapThongTinSinhVien();
     soLuongSinhVienMang++;
 }
 
-
-void xuatSinhVienMang(SV LIST_MANG[], int& soLuongSinhVienMang, int index)
+void xuatSinhVienMang(SV LIST_MANG[], int &soLuongSinhVienMang, int index)
 {
     for (int i = 0; i < soLuongSinhVienMang; i++)
     {
-        xuat(LIST_MANG[i], index++);
+        xuat(LIST_MANG[i]);
         cout << endl;
     }
 }
@@ -76,6 +69,6 @@ void xuatDSLKDon(LIST_DON listDon)
     int index = 0;
     for (pNODE_DON p = listDon.pHead_Don; p != NULL; p = p->pNext_Don)
     {
-        xuat(p->data, index++);
+        xuat(p->data);
     }
 }

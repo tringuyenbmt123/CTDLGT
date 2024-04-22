@@ -7,6 +7,9 @@
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
 
+#define BLUE 9
+#define CYAN 11
+#define WHITE 15
 
 // ------------------------------ tu them---------------------------
 pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
@@ -50,7 +53,21 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
 }
 
 // ------------------------------------
-string formChu(string& str) // chỉ dùng cho chữ , ko được dùng số
+// Hàm đổi màu chữ
+void SET_COLOR(int color)
+{
+    WORD wColor;
+
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+    {
+        wColor = (csbi.wAttributes & 0xF0) + (color & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+}
+
+string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
 {
     while (str[0] == ' ')
     {
@@ -94,7 +111,7 @@ enum class Field
     Diem
 };
 template <typename T>
-T getValue(const SV& sv, const string& field)
+T getValue(const SV &sv, const string &field)
 {
     if (field == "maSV")
         return sv.maSV;
@@ -109,7 +126,7 @@ T getValue(const SV& sv, const string& field)
     throw invalid_argument("Field name is invalid");
 }
 
-string getValue(const SV& sv, const string& field)
+string getValue(const SV &sv, const string &field)
 {
     if (field == "maSV")
         return sv.maSV;
@@ -125,7 +142,7 @@ string getValue(const SV& sv, const string& field)
 }
 
 template <typename T>
-int Binary_Search(SV listMang[], int left, int right, const T& x, const string& input)
+int Binary_Search(SV listMang[], int left, int right, const T &x, const string &input)
 {
     if (left > right)
     {
@@ -153,8 +170,8 @@ int Binary_Search(SV listMang[], int left, int right, const T& x, const string& 
 }
 
 // Phần dành cho DSLK Đơn
-//template<typename T>
-//T getValue(const SV& sv, Field field) {
+// template<typename T>
+// T getValue(const SV& sv, Field field) {
 //    switch (field) {
 //    case Field::MaSV:
 //        return sv.maSV;
@@ -171,8 +188,8 @@ int Binary_Search(SV listMang[], int left, int right, const T& x, const string& 
 //    }
 //}
 //
-//template<typename T>
-//int Binary_Search(pNODE_DON head, const T& x, Field input) {
+// template<typename T>
+// int Binary_Search(pNODE_DON head, const T& x, Field input) {
 //    pNODE_DON current = head;
 //    while (current) {
 //        string currentValue = getValue(current->data, input); // Chuyển Field thành string ở đây
@@ -188,19 +205,18 @@ int Binary_Search(SV listMang[], int left, int right, const T& x, const string& 
 //    return -1; // Không tìm thấy giá trị x
 //}
 
-
 //----------------
 
-string TenDaoNguoc(string& str)
+string TenDaoNguoc(string &str)
 {
     reverse(str.begin(), str.end());
     return str;
 }
-void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<int>& foundIndices, int& index)
+void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<int> &foundIndices, int &index)
 {
     int lc;
     bool backToSearchMenu = false; // Biến để kiểm tra liệu người dùng muốn quay lại menu tìm kiếm ban đầu hay không
-    while (!backToSearchMenu) // Thực hiện trong khi người dùng không muốn quay lại menu tìm kiếm
+    while (!backToSearchMenu)      // Thực hiện trong khi người dùng không muốn quay lại menu tìm kiếm
     {
         system("cls");
         cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?";
@@ -214,11 +230,14 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<in
         {
         case 1:
         {
+            inTieuDe();
             for (int i : foundIndices)
             {
                 string reversedName = TenDaoNguoc(LIST_MANG[i].ten);
                 string reversedHo = TenDaoNguoc(LIST_MANG[i].ho);
-                xuat(LIST_MANG[i], index++);
+                SET_COLOR(BLUE);
+                xuat(LIST_MANG[i]);
+                SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
                 cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
             }
             system("pause");
@@ -227,9 +246,12 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<in
 
         case 2:
         {
+            inTieuDe();
             for (int i : foundIndices)
             {
-                xuat(LIST_MANG[i], index++);
+                SET_COLOR(BLUE);
+                xuat(LIST_MANG[i]);
+                SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
             }
             system("pause");
             break;
@@ -247,10 +269,9 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<in
     }
 }
 
-
 //----------------- Phần thêm SV vào cuối
 // Hàm thêm vào cuối DSLK Dơn
-void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
+void themVaoCuoiDSLKDon(LIST_DON &listDon, pNODE_DON p)
 {
     if (listDon.pHead_Don == NULL)
     {
@@ -267,14 +288,13 @@ void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
     }
 }
 
-void themSinhVienDSLKDon(LIST_DON& listDon)
+void themSinhVienDSLKDon(LIST_DON &listDon)
 {
     cout << "- Them sinh vien tiep theo: ";
     SV sv = nhapThongTinSinhVien();
     pNODE_DON p = khoiTaoNodeDon(sv);
     themVaoCuoiDSLKDon(listDon, p);
 }
-
 
 //----------------
 void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- MẠNG
@@ -304,7 +324,11 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
 
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, mssvCanTim, "maSV");
+
+            auto end = chrono::high_resolution_clock::now(); // Kết thúc tính thời gian
 
             if (result_str != -1)
             {
@@ -318,6 +342,9 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             {
                 cout << "Not found" << endl;
             }
+
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start); // Tính thời gian
+            cout << "Thoi gian tim kiem: " << duration.count() << " ms" << endl;      // In ra thời gian
             break;
         }
 
@@ -330,7 +357,11 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             getline(cin, hoCanTim);
             formChu(hoCanTim);
 
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
+
+            auto end = chrono::high_resolution_clock::now(); // Kết thúc tính thời gian
 
             if (result_str != -1)
             {
@@ -350,6 +381,9 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             {
                 cout << "Not found" << endl;
             }
+
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start); // Tính thời gian
+            cout << "Thoi gian tim kiem: " << duration.count() << " ms" << endl;      // In ra thời gian
             break;
         }
 
@@ -362,7 +396,11 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             getline(cin, tenCanTim);
             formChu(tenCanTim);
 
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, tenCanTim, "ten");
+
+            auto end = chrono::high_resolution_clock::now(); // Kết thúc tính thời gian
 
             if (result_str != -1)
             {
@@ -382,6 +420,9 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             {
                 cout << "Not found" << endl;
             }
+
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start); // Tính thời gian
+            cout << "Thoi gian tim kiem: " << duration.count() << " ms" << endl;      // In ra thời gian
             break;
         }
 
@@ -394,7 +435,11 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             getline(cin, lopCanTim);
             formChu(lopCanTim);
 
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, lopCanTim, "lop");
+
+            auto end = chrono::high_resolution_clock::now(); // Kết thúc tính thời gian
 
             if (result_str != -1)
             {
@@ -414,6 +459,8 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             {
                 cout << "Not found" << endl;
             }
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start); // Tính thời gian
+            cout << "Thoi gian tim kiem: " << duration.count() << " ms" << endl;      // In ra thời gian
             break;
         }
 
@@ -425,20 +472,23 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             cin >> diemCanTim;
             // tìm
             int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
-            
-                vector<int> foundIndices;
-                for (int i = 0; i < soLuongSinhVien; ++i)
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
+            vector<int> foundIndices;
+            for (int i = 0; i < soLuongSinhVien; ++i)
+            {
+                if (LIST_MANG[i].diem == diemCanTim)
                 {
-                    if (LIST_MANG[i].diem == diemCanTim)
-                    {
-                        foundIndices.push_back(i);
-                    }
+                    foundIndices.push_back(i);
                 }
-                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
-           
+            }
+            auto end = chrono::high_resolution_clock::now(); // Kết thúc tính thời gian
+
+            luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start); // Tính thời gian
+            cout << "Thoi gian tim kiem: " << duration.count() << " ms" << endl;      // In ra thời gian
             break;
         }
-
 
         default:
             break;
@@ -447,7 +497,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
     }
 }
 
-void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon) //  ---------- ĐƠN
+void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
 {
 
     int lc;
@@ -476,15 +526,15 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon) //  ---------- ĐƠN
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
             // int result = Binary_Search(listDon.pHead_Don, mssvCanTim, Field::MaSV);
-           /* if (result == 0)
-            {
-                xuat(listDon.pHead_Don->data, index++);
-                system("pause");
-            }
-            else
-            {
-                cout << "Not found" << endl;
-            }*/
+            /* if (result == 0)
+             {
+                 xuat(listDon.pHead_Don->data, index++);
+                 system("pause");
+             }
+             else
+             {
+                 cout << "Not found" << endl;
+             }*/
             break;
         }
 
@@ -530,17 +580,16 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon) //  ---------- ĐƠN
     }
 }
 
-
 int main()
 {
     // test chuong trinh
-    SV listMang[7] = { {"112", "Hung", "An", "12A", 8.5},
+    SV listMang[7] = {{"112", "Hung", "An", "12A", 8.5},
                       {"123", "Le", "Binh", "12B", 7.0},
                       {"222", "Le", "Gioi", "19B", 9.0},
                       {"333", "Tinh", "Binh", "18B", 8.0},
                       {"444", "La", "Binh", "15B", 7.0},
                       {"456", "Tinh", "Binh", "13B", 5.0},
-                      {"789", "Nguyen", "Cuong", "11C", 8.1} };
+                      {"789", "Nguyen", "Cuong", "11C", 8.1}};
 
     timKiemSinhVienMang(listMang, 7);
 

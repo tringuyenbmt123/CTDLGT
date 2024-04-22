@@ -1,10 +1,12 @@
 ﻿#include <sstream>
+#include <vector>
 
 #include "danh_sach_lien_ket_don.h"
 #include "danh_sach_lien_ket_kep.h"
 #include "danh_sach_lien_ket_vong.h"
 #include "mang.h"
 #include "nhapXuatSinhVien.h"
+
 
 // ------------------------------ tu them---------------------------
 pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
@@ -47,8 +49,8 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
     return p;
 }
 
-// ------------------------------------ code chinh ------------------------------
-string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
+// ------------------------------------
+string formChu(string& str) // chỉ dùng cho chữ , ko được dùng số
 {
     while (str[0] == ' ')
     {
@@ -92,7 +94,7 @@ enum class Field
     Diem
 };
 template <typename T>
-T getValue(const SV &sv, const string &field)
+T getValue(const SV& sv, const string& field)
 {
     if (field == "maSV")
         return sv.maSV;
@@ -107,7 +109,7 @@ T getValue(const SV &sv, const string &field)
     throw invalid_argument("Field name is invalid");
 }
 
-string getValue(const SV &sv, const string &field)
+string getValue(const SV& sv, const string& field)
 {
     if (field == "maSV")
         return sv.maSV;
@@ -123,7 +125,7 @@ string getValue(const SV &sv, const string &field)
 }
 
 template <typename T>
-int Binary_Search(SV listMang[], int left, int right, const T &x, const string &input)
+int Binary_Search(SV listMang[], int left, int right, const T& x, const string& input)
 {
     if (left > right)
     {
@@ -149,23 +151,62 @@ int Binary_Search(SV listMang[], int left, int right, const T &x, const string &
         return Binary_Search(listMang, left, mid - 1, xAsString, input);
     }
 }
+
+// Phần dành cho DSLK Đơn
+//template<typename T>
+//T getValue(const SV& sv, Field field) {
+//    switch (field) {
+//    case Field::MaSV:
+//        return sv.maSV;
+//    case Field::Ho:
+//        return sv.ho;
+//    case Field::Ten:
+//        return sv.ten;
+//    case Field::Lop:
+//        return sv.lop;
+//    case Field::Diem:
+//        return to_string(sv.diem);
+//    default:
+//        throw invalid_argument("Field name is invalid");
+//    }
+//}
+//
+//template<typename T>
+//int Binary_Search(pNODE_DON head, const T& x, Field input) {
+//    pNODE_DON current = head;
+//    while (current) {
+//        string currentValue = getValue(current->data, input); // Chuyển Field thành string ở đây
+//        string xAsString = to_string(x);
+//
+//        if (currentValue == xAsString)
+//            return 0; // Tìm thấy giá trị x
+//        else if (currentValue < xAsString)
+//            current = current->pNext_Don;
+//        else
+//            break;
+//    }
+//    return -1; // Không tìm thấy giá trị x
+//}
+
+
 //----------------
 
-string TenDaoNguoc(string &str)
+string TenDaoNguoc(string& str)
 {
     reverse(str.begin(), str.end());
     return str;
 }
-
-void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, int rs_s, int &index)
+void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<int>& foundIndices, int& index)
 {
     int lc;
-    while (true)
+    bool backToSearchMenu = false; // Biến để kiểm tra liệu người dùng muốn quay lại menu tìm kiếm ban đầu hay không
+    while (!backToSearchMenu) // Thực hiện trong khi người dùng không muốn quay lại menu tìm kiếm
     {
         system("cls");
-        cout << "\tDa tim thay thong tin sinh vien .Ban co muon xuat ten dao nguoc khong ?";
+        cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?";
         cout << "\n\t  1. YES";
         cout << "\n\t  2. NO";
+        cout << "\n\t  3. Quay lai menu tim kiem";
         cout << "\n\t - Nhap lua chon: ";
         cin >> lc;
 
@@ -173,18 +214,32 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, int rs_s, int &
         {
         case 1:
         {
-            xuat(LIST_MANG[rs_s], index++);
-            string reversedName = TenDaoNguoc(LIST_MANG[rs_s].ten);
-            cout << "Ten dao nguoc: " << reversedName << endl;
+            for (int i : foundIndices)
+            {
+                string reversedName = TenDaoNguoc(LIST_MANG[i].ten);
+                string reversedHo = TenDaoNguoc(LIST_MANG[i].ho);
+                xuat(LIST_MANG[i], index++);
+                cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
+            }
             system("pause");
+            break;
         }
 
         case 2:
         {
-            xuat(LIST_MANG[rs_s], index++);
+            for (int i : foundIndices)
+            {
+                xuat(LIST_MANG[i], index++);
+            }
             system("pause");
+            break;
         }
-        break;
+
+        case 3:
+        {
+            backToSearchMenu = true; // Đặt biến backToSearchMenu về true để thoát khỏi vòng lặp và quay lại menu tìm kiếm
+            break;
+        }
 
         default:
             break;
@@ -192,6 +247,36 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, int rs_s, int &
     }
 }
 
+
+//----------------- Phần thêm SV vào cuối
+// Hàm thêm vào cuối DSLK Dơn
+void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
+{
+    if (listDon.pHead_Don == NULL)
+    {
+        listDon.pHead_Don = p;
+    }
+    else
+    {
+        pNODE_DON temp = listDon.pHead_Don;
+        while (temp->pNext_Don != NULL)
+        {
+            temp = temp->pNext_Don;
+        }
+        temp->pNext_Don = p;
+    }
+}
+
+void themSinhVienDSLKDon(LIST_DON& listDon)
+{
+    cout << "- Them sinh vien tiep theo: ";
+    SV sv = nhapThongTinSinhVien();
+    pNODE_DON p = khoiTaoNodeDon(sv);
+    themVaoCuoiDSLKDon(listDon, p);
+}
+
+
+//----------------
 void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- MẠNG
 {
     int lc;
@@ -223,7 +308,9 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
 
             if (result_str != -1)
             {
-                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, result_str, index);
+                vector<int> foundIndices;
+                foundIndices.push_back(result_str);
+                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
 
                 system("pause");
             }
@@ -245,15 +332,24 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
 
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
 
-            for (int i = 0; i < soLuongSinhVien; ++i)
+            if (result_str != -1)
             {
-                if (LIST_MANG[i].ho == hoCanTim)
+                vector<int> foundIndices;
+                for (int i = 0; i < soLuongSinhVien; ++i)
                 {
-                    xuat(LIST_MANG[i], index++);
+                    if (LIST_MANG[i].ho == hoCanTim)
+                    {
+                        foundIndices.push_back(i);
+                    }
                 }
-            }
+                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
 
-            system("pause");
+                system("pause");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -268,14 +364,24 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
 
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, tenCanTim, "ten");
 
-            for (int i = 0; i < soLuongSinhVien; ++i)
+            if (result_str != -1)
             {
-                if (LIST_MANG[i].ten == tenCanTim)
+                vector<int> foundIndices;
+                for (int i = 0; i < soLuongSinhVien; ++i)
                 {
-                    xuat(LIST_MANG[i], index++);
+                    if (LIST_MANG[i].ten == tenCanTim)
+                    {
+                        foundIndices.push_back(i);
+                    }
                 }
-            }
+                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
 
+                system("pause");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -290,14 +396,24 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
 
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, lopCanTim, "lop");
 
-            for (int i = 0; i < soLuongSinhVien; ++i)
+            if (result_str != -1)
             {
-                if (LIST_MANG[i].lop == lopCanTim)
+                vector<int> foundIndices;
+                for (int i = 0; i < soLuongSinhVien; ++i)
                 {
-                    xuat(LIST_MANG[i], index++);
+                    if (LIST_MANG[i].lop == lopCanTim)
+                    {
+                        foundIndices.push_back(i);
+                    }
                 }
-            }
+                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
 
+                system("pause");
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
             break;
         }
 
@@ -309,13 +425,101 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             cin >> diemCanTim;
             // tìm
             int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
-            for (int i = 0; i < soLuongSinhVien; ++i)
-            {
-                if (LIST_MANG[i].diem == diemCanTim)
+            
+                vector<int> foundIndices;
+                for (int i = 0; i < soLuongSinhVien; ++i)
                 {
-                    xuat(LIST_MANG[i], index++);
+                    if (LIST_MANG[i].diem == diemCanTim)
+                    {
+                        foundIndices.push_back(i);
+                    }
                 }
+                luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index);
+           
+            break;
+        }
+
+
+        default:
+            break;
+        }
+        system("pause");
+    }
+}
+
+void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon) //  ---------- ĐƠN
+{
+
+    int lc;
+    while (true)
+    {
+        system("cls");
+        cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
+        cout << "\t======================= MENU =======================";
+        cout << "\n\t  1. Tim theo ma sinh vien.";
+        cout << "\n\t  2. Tim theo ho.";
+        cout << "\n\t  3. Tim theo ten.";
+        cout << "\n\t  4. Tim theo lop.";
+        cout << "\n\t  5. Tim theo diem.";
+
+        cout << "\n\t======================= END =======================";
+        cout << "\n\n\t - Nhap lua chon: ";
+        cin >> lc;
+
+        switch (lc)
+        {
+        case 1:
+        {
+            cin.ignore();
+            int index = 0;
+            cout << "\n\tNhap ma sinh vien can tim : ";
+            string mssvCanTim = "";
+            getline(cin, mssvCanTim);
+            // int result = Binary_Search(listDon.pHead_Don, mssvCanTim, Field::MaSV);
+           /* if (result == 0)
+            {
+                xuat(listDon.pHead_Don->data, index++);
+                system("pause");
             }
+            else
+            {
+                cout << "Not found" << endl;
+            }*/
+            break;
+        }
+
+        case 2:
+        {
+            cin.ignore();
+            cout << "\n\tNhap ho sinh vien can tim : ";
+            string hoCanTim = "";
+            getline(cin, hoCanTim);
+            break;
+        }
+
+        case 3:
+        {
+            cin.ignore();
+            cout << "\n\tNhap ten sinh vien can tim : ";
+            string tenCanTim = "";
+            getline(cin, tenCanTim);
+            break;
+        }
+
+        case 4:
+        {
+            cin.ignore();
+            cout << "\n\tNhap lop sinh vien can tim : ";
+            string lopCanTim = "";
+            getline(cin, lopCanTim);
+            break;
+        }
+
+        case 5:
+        {
+            cout << "\n\tNhap diem sinh vien can tim : ";
+            float diemCanTim;
+            cin >> diemCanTim;
             break;
         }
 
@@ -326,19 +530,26 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
     }
 }
 
+
 int main()
 {
     // test chuong trinh
-    SV listMang[7] = {{"112", "Hung", "An", "12A", 8.5},
+    SV listMang[7] = { {"112", "Hung", "An", "12A", 8.5},
                       {"123", "Le", "Binh", "12B", 7.0},
                       {"222", "Le", "Gioi", "19B", 9.0},
                       {"333", "Tinh", "Binh", "18B", 8.0},
                       {"444", "La", "Binh", "15B", 7.0},
                       {"456", "Tinh", "Binh", "13B", 5.0},
-                      {"789", "Nguyen", "Cuong", "11C", 8.1}};
+                      {"789", "Nguyen", "Cuong", "11C", 8.1} };
 
     timKiemSinhVienMang(listMang, 7);
 
+    /*LIST_DON listDon;
+    khoitaoDSLKDon(listDon);
+
+    themSinhVienDSLKDon(listDon);
+
+    timKiemSinhVienDanhSachLkDon(listDon);*/
     return 0;
 }
 

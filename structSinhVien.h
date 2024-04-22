@@ -2,16 +2,13 @@
 
 #include <iostream>
 #include <string>
-#include<string.h>
-#include<iomanip>
+#include <string.h>
+#include <iomanip>
 #include <stdexcept> // thư viện dùng cho template
-#include<windows.h>
-#include<algorithm>
+#include <windows.h>
+#include <algorithm>
 #include <time.h>
 #include <chrono>
-#include  <cctype>
-
-
 
 using namespace std;
 

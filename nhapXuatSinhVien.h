@@ -3,6 +3,7 @@
 #include "structSinhVien.h"
 #include <string.h>
 #include <algorithm>
+#include "danh_sach_lien_ket_don.h"
 
 SV nhapThongTinSinhVien()
 {
@@ -18,6 +19,8 @@ SV nhapThongTinSinhVien()
     cout << "\n\t- Nhap ten SV: ";
     getline(cin, sv.ten);
 
+
+
     cout << "\n\t- Nhap lop cua SV: ";
     getline(cin, sv.lop);
 
@@ -26,6 +29,7 @@ SV nhapThongTinSinhVien()
 
     return sv;
 }
+
 
 // Hàm in tiêu đề
 void inTieuDe()
@@ -48,14 +52,15 @@ void xuat(SV sv)
     cout << setw(10) << left << sv.diem << endl;
 }
 
-void themSinhVienMang(SV sv[], int &soLuongSinhVienMang)
+void themSinhVienMang(SV sv[], int& soLuongSinhVienMang)
 {
 
     sv[soLuongSinhVienMang] = nhapThongTinSinhVien();
     soLuongSinhVienMang++;
 }
 
-void xuatSinhVienMang(SV LIST_MANG[], int &soLuongSinhVienMang, int index)
+
+void xuatSinhVienMang(SV LIST_MANG[], int& soLuongSinhVienMang, int index)
 {
     for (int i = 0; i < soLuongSinhVienMang; i++)
     {

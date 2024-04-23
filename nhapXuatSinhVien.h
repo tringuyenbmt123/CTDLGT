@@ -8,7 +8,7 @@
 SV nhapThongTinSinhVien()
 {
     SV sv;
-    cin.ignore();// CHỖ NÀY IGNORE Ở SAU KHI NHẬP SỐ
+    cin.ignore(); // CHỖ NÀY IGNORE Ở SAU KHI NHẬP SỐ
 
     cout << "\n\t- Nhap ma SV: ";
     getline(cin, sv.maSV);
@@ -19,8 +19,6 @@ SV nhapThongTinSinhVien()
     cout << "\n\t- Nhap ten SV: ";
     getline(cin, sv.ten);
 
-
-
     cout << "\n\t- Nhap lop cua SV: ";
     getline(cin, sv.lop);
 
@@ -30,35 +28,22 @@ SV nhapThongTinSinhVien()
     return sv;
 }
 
-
 // Hàm in tiêu đề
 void inTieuDe()
 {
-    cout << setw(20) << left << "Ma SV";
-    cout << setw(30) << left << "| Ho va Ten";
-    cout << setw(20) << left << "| Lop";
-    cout << setw(10) << left << "| Diem" << endl;
-    cout << setfill('-');
-    cout << setw(90) << "-" << endl;
+    cout << left << setw(30) << "| MSSV" << setw(30) << "| Ho va Ten" << setw(20) << "| Lop" << setw(10) << "| Diem" << endl;
+    cout << setfill('-') << setw(90) << "" << setfill(' ') << endl;
 }
 
 void xuat(SV sv)
 {
-    cout << setfill(' ');
-    cout << setw(22) << left << sv.maSV;
-    cout << setw(0) << left << sv.ho << " " << sv.ten;
-    cout << setw(25) << left << " ";
-    cout << setw(25) << left << sv.lop;
-    cout << setw(10) << left << sv.diem << endl;
+    cout << left << setw(32) << sv.maSV << setw(30) << sv.ho + " " + sv.ten << setw(20) << sv.lop << setw(10) << sv.diem << endl;
 }
 
-
-
-void themSinhVienMang (SV sv[], int &soLuongSinhVienMang, int index)
+void themSinhVienMang(SV sv[], int &soLuongSinhVienMang, int index)
 {
 
-   
-   SV  x= nhapThongTinSinhVien();
+    SV x = nhapThongTinSinhVien();
     if (index >= 0 && index <= soLuongSinhVienMang)
     {
         for (int i = soLuongSinhVienMang; i > index; i--)
@@ -68,8 +53,7 @@ void themSinhVienMang (SV sv[], int &soLuongSinhVienMang, int index)
     }
 }
 
-
-void xuatSinhVienMang(SV LIST_MANG[], int& soLuongSinhVienMang, int index)
+void xuatSinhVienMang(SV LIST_MANG[], int &soLuongSinhVienMang, int index)
 {
     for (int i = 0; i < soLuongSinhVienMang; i++)
     {

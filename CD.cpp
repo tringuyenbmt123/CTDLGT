@@ -54,6 +54,10 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
 }
 
 // ------------------------------------
+
+
+
+
 // Hàm đổi màu chữ
 void SET_COLOR(int color)
 {
@@ -67,7 +71,7 @@ void SET_COLOR(int color)
         SetConsoleTextAttribute(hStdOut, wColor);
     }
 }
-
+// định dạng form chữ 
 string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
 {
     while (str[0] == ' ')
@@ -152,6 +156,35 @@ string getValue(const SV &sv, const string &field)
     if (field == "diem") // Thêm trường hợp cho trường "diem"
         return to_string(sv.diem);
     throw invalid_argument("Field name is invalid");
+}
+
+// quick sort
+void quickSort(SV a[], int l, int r, const string &input){
+
+      string midValue = getValue(a[(l + r) / 2], input);
+	//int p = a[(l+r)/2].m;
+	int i = l, j = r;
+	while (i < j){
+		while (getValue(a[i], input) < midValue){
+			i++;
+		}
+		while (getValue(a[j], input) > midValue){
+			j--;
+		}
+		if (i <= j){
+            SV temp = a[i];
+			a[i] = a[j];
+			a[j] = temp;
+			i++;
+			j--;
+		}
+	}
+	if (i < r){
+		quickSort(a, i, r,input);
+	}
+	if (l < j){
+		quickSort(a, l, j, input);
+	}
 }
 
 template <typename T>
@@ -319,7 +352,7 @@ void themSinhVienDSLKDon(LIST_DON &listDon)
 void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- MẠNG
 {
     int lc;
-   // int tgianTimKiem;
+    // int tgianTimKiem;
     while (true)
     {
         system("cls");
@@ -344,10 +377,14 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
             formMssv(mssvCanTim);
+            // --- sap xep
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "maSV");
+
+            //-------------------
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
-            
+
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, mssvCanTim, "maSV");
-            
+
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
@@ -364,8 +401,8 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
                 cout << "Not found" << endl;
             }
 
-           cout << "Thoi gian tim kiem: " << tgianTimKiem << " micro s" << endl; // In ra thời gian
-           
+            cout << "Thoi gian tim kiem: " << tgianTimKiem << " micro s" << endl; // In ra thời gian
+
             break;
         }
 
@@ -378,13 +415,18 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             getline(cin, hoCanTim);
             formChu(hoCanTim);
 
+            // --- sap xep thử
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
+
+            //-------------------
+
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
 
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
 
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
-           int tgianTimKiem = duration.count();
+            int tgianTimKiem = duration.count();
             if (result_str != -1)
             {
                 vector<int> foundIndices;
@@ -417,13 +459,18 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             getline(cin, tenCanTim);
             formChu(tenCanTim);
 
+            // --- sap xep thử
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ten");
+
+            //-------------------
+
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
 
             int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, tenCanTim, "ten");
 
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
-           int tgianTimKiem = duration.count();
+            int tgianTimKiem = duration.count();
             if (result_str != -1)
             {
                 vector<int> foundIndices;
@@ -454,7 +501,11 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             cout << "\n\tNhap lop sinh vien can tim : ";
             string lopCanTim = "";
             getline(cin, lopCanTim);
-            
+            formMssv(lopCanTim );
+            // --- sap xep thử
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "lop");
+
+            //-------------------
 
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
 
@@ -462,7 +513,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
 
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
-          int  tgianTimKiem = duration.count();
+            int tgianTimKiem = duration.count();
             if (result_str != -1)
             {
                 vector<int> foundIndices;
@@ -492,6 +543,12 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             cout << "\n\tNhap diem sinh vien can tim : ";
             float diemCanTim;
             cin >> diemCanTim;
+
+            // --- sap xep thử
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "diem");
+
+            //-------------------
+
             // tìm
             int result_str = Binary_Search<float>(LIST_MANG, 0, soLuongSinhVien - 1, diemCanTim, "diem");
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
@@ -606,17 +663,18 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
 int main()
 {
     // test chuong trinh
-    SV listMang[7] = {{"112", "Hung", "An", "12A", 8.5},
-                      {"123", "Le", "Binh", "12B", 7.0},
-                      {"222", "Lenh", "Gioi", "19B", 9.0},
-                      {"333", "La", "Binh", "18B", 8.0},
-                      {"444", "Lung", "Binh", "15B", 7.0},
-                      {"456", "Nguyen", "Binh", "13B", 5.0},
-                      {"789", "Tinh", "Cuong", "11C", 8.1}};
-
-    timKiemSinhVienMang(listMang, 7);
+    SV listMang[7] = { {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
+                       {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
+                       {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.0},
+                        {"N22DCAT022", "La", "Binh",  "D22CQCN02 - N", 8.0},
+                         {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.0},
+                          {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0},
+                           {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1}};
 
 
+
+                   timKiemSinhVienMang(listMang, 7);
+   
 
 
 

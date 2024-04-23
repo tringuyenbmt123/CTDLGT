@@ -8,7 +8,7 @@
 SV nhapThongTinSinhVien()
 {
     SV sv;
-    /*cin.ignore();*/ // CHỖ NÀY IGNORE Ở SAU KHI NHẬP SỐ
+    cin.ignore();// CHỖ NÀY IGNORE Ở SAU KHI NHẬP SỐ
 
     cout << "\n\t- Nhap ma SV: ";
     getline(cin, sv.maSV);
@@ -52,11 +52,20 @@ void xuat(SV sv)
     cout << setw(10) << left << sv.diem << endl;
 }
 
-void themSinhVienMang(SV sv[], int& soLuongSinhVienMang)
+
+
+void themSinhVienMang (SV sv[], int &soLuongSinhVienMang, int index)
 {
 
-    sv[soLuongSinhVienMang] = nhapThongTinSinhVien();
-    soLuongSinhVienMang++;
+   
+   SV  x= nhapThongTinSinhVien();
+    if (index >= 0 && index <= soLuongSinhVienMang)
+    {
+        for (int i = soLuongSinhVienMang; i > index; i--)
+            sv[i] = sv[i - 1];
+        sv[index] = x;
+        soLuongSinhVienMang++;
+    }
 }
 
 

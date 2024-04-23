@@ -55,9 +55,6 @@ pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
 
 // ------------------------------------
 
-
-
-
 // Hàm đổi màu chữ
 void SET_COLOR(int color)
 {
@@ -71,7 +68,7 @@ void SET_COLOR(int color)
         SetConsoleTextAttribute(hStdOut, wColor);
     }
 }
-// định dạng form chữ 
+// định dạng form chữ
 string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
 {
     while (str[0] == ' ')
@@ -159,32 +156,39 @@ string getValue(const SV &sv, const string &field)
 }
 
 // quick sort
-void quickSort(SV a[], int l, int r, const string &input){
+void quickSort(SV a[], int l, int r, const string &input)
+{
 
-      string midValue = getValue(a[(l + r) / 2], input);
-	//int p = a[(l+r)/2].m;
-	int i = l, j = r;
-	while (i < j){
-		while (getValue(a[i], input) < midValue){
-			i++;
-		}
-		while (getValue(a[j], input) > midValue){
-			j--;
-		}
-		if (i <= j){
+    string midValue = getValue(a[(l + r) / 2], input);
+    // int p = a[(l+r)/2].m;
+    int i = l, j = r;
+    while (i < j)
+    {
+        while (getValue(a[i], input) < midValue)
+        {
+            i++;
+        }
+        while (getValue(a[j], input) > midValue)
+        {
+            j--;
+        }
+        if (i <= j)
+        {
             SV temp = a[i];
-			a[i] = a[j];
-			a[j] = temp;
-			i++;
-			j--;
-		}
-	}
-	if (i < r){
-		quickSort(a, i, r,input);
-	}
-	if (l < j){
-		quickSort(a, l, j, input);
-	}
+            a[i] = a[j];
+            a[j] = temp;
+            i++;
+            j--;
+        }
+    }
+    if (i < r)
+    {
+        quickSort(a, i, r, input);
+    }
+    if (l < j)
+    {
+        quickSort(a, l, j, input);
+    }
 }
 
 template <typename T>
@@ -260,7 +264,7 @@ string TenDaoNguoc(string str)
     reverse(temp.begin(), temp.end());
     return temp;
 }
-void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int soLuongSinhVien, const vector<int> &foundIndices, int &index, int thoiGianTimKiem)
+void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int &soLuongSinhVien, const vector<int> &foundIndices, int &index, int thoiGianTimKiem)
 {
     int lc;
     bool backToSearchMenu = false; // Biến để kiểm tra liệu người dùng muốn quay lại menu tìm kiếm ban đầu hay không
@@ -349,7 +353,7 @@ void themSinhVienDSLKDon(LIST_DON &listDon)
 }
 
 //----------------
-void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- MẠNG
+void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- MẠNG
 {
     int lc;
     // int tgianTimKiem;
@@ -501,7 +505,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             cout << "\n\tNhap lop sinh vien can tim : ";
             string lopCanTim = "";
             getline(cin, lopCanTim);
-            formMssv(lopCanTim );
+            formMssv(lopCanTim);
             // --- sap xep thử
             quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "lop");
 
@@ -567,6 +571,25 @@ void timKiemSinhVienMang(SV LIST_MANG[], int soLuongSinhVien) //  ---------- M�
             luaChonXuatTenDaoNguoc(LIST_MANG, soLuongSinhVien, foundIndices, index, tgianTimKiem);
 
             cout << "Thoi gian tim kiem: " << tgianTimKiem << " micro s" << endl; // In ra thời gian
+            break;
+        }
+
+        case 6:
+        {
+            themSinhVienMang(LIST_MANG, soLuongSinhVien, soLuongSinhVien);
+            cout << "\n\tTHEM THANH CONG !!!";
+            system("pause");
+            break;
+        }
+
+        case 7:
+        {
+
+            for (int i = 0; i < soLuongSinhVien; i++)
+            {
+                xuat(LIST_MANG[i]);
+                cout << endl;
+            }
             break;
         }
 
@@ -663,21 +686,18 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
 int main()
 {
     // test chuong trinh
-    SV listMang[7] = { {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
-                       {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
-                       {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.0},
-                        {"N22DCAT022", "La", "Binh",  "D22CQCN02 - N", 8.0},
-                         {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.0},
-                          {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0},
-                           {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1}};
+    int soLuong = 7;
+    SV listMang[100] = {{"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
+                      {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
+                      {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.0},
+                      {"N22DCAT022", "La", "Binh", "D22CQCN02 - N", 8.0},
+                      {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.0},
+                      {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0},
+                      {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1}};
 
+     timKiemSinhVienMang(listMang, soLuong);
 
-
-                   timKiemSinhVienMang(listMang, 7);
-   
-
-
-
+  
     /*LIST_DON listDon;
     khoitaoDSLKDon(listDon);
 

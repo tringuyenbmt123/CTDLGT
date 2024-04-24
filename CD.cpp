@@ -155,6 +155,34 @@ string getValue(const SV &sv, const string &field)
     throw invalid_argument("Field name is invalid");
 }
 
+template <typename T>
+int Binary_Search(SV listMang[], int left, int right, const T &x, const string &input)
+{
+    if (left > right)
+    {
+        return -1;
+    }
+    int mid = (left + right) / 2;
+    string midValue = getValue(listMang[mid], input);
+
+    stringstream ss;
+    ss << x;
+    string xAsString = ss.str();
+
+    if (midValue == xAsString)
+    {
+        return mid;
+    }
+    else if (midValue < xAsString)
+    {
+        return Binary_Search(listMang, mid + 1, right, xAsString, input);
+    }
+    else
+    {
+        return Binary_Search(listMang, left, mid - 1, xAsString, input);
+    }
+}
+
 // quick sort
 void quickSort(SV a[], int l, int r, const string &input)
 {
@@ -191,70 +219,104 @@ void quickSort(SV a[], int l, int r, const string &input)
     }
 }
 
-template <typename T>
-int Binary_Search(SV listMang[], int left, int right, const T &x, const string &input)
+// Phần dành cho DSLK Đơn
+string getValue_DSLKDon(const SV &sv, Field field)
 {
-    if (left > right)
+    switch (field)
     {
-        return -1;
-    }
-    int mid = (left + right) / 2;
-    string midValue = getValue(listMang[mid], input);
-
-    stringstream ss;
-    ss << x;
-    string xAsString = ss.str();
-
-    if (midValue == xAsString)
-    {
-        return mid;
-    }
-    else if (midValue < xAsString)
-    {
-        return Binary_Search(listMang, mid + 1, right, xAsString, input);
-    }
-    else
-    {
-        return Binary_Search(listMang, left, mid - 1, xAsString, input);
+    case Field::MaSV:
+        return sv.maSV;
+    case Field::Ho:
+        return sv.ho;
+    case Field::Ten:
+        return sv.ten;
+    case Field::Lop:
+        return sv.lop;
+    case Field::Diem:
+        return to_string(sv.diem); // Use to_string for converting double to string
+    default:
+        throw invalid_argument("Field name is invalid");
     }
 }
 
-//
-// Phần dành cho DSLK Đơn
-// template<typename T>
-// T getValue(const SV& sv, Field field) {
-//    switch (field) {
-//    case Field::MaSV:
-//        return sv.maSV;
-//    case Field::Ho:
-//        return sv.ho;
-//    case Field::Ten:
-//        return sv.ten;
-//    case Field::Lop:
-//        return sv.lop;
-//    case Field::Diem:
-//        return to_string(sv.diem);
-//    default:
-//        throw invalid_argument("Field name is invalid");
-//    }
-//}
-//
-// template<typename T>
-// int Binary_Search(pNODE_DON head, const T& x, Field input) {
-//    pNODE_DON current = head;
-//    while (current) {
-//        string currentValue = getValue(current->data, input); // Chuyển Field thành string ở đây
-//        string xAsString = to_string(x);
-//
-//        if (currentValue == xAsString)
-//            return 0; // Tìm thấy giá trị x
-//        else if (currentValue < xAsString)
-//            current = current->pNext_Don;
-//        else
-//            break;
-//    }
-//    return -1; // Không tìm thấy giá trị x
-//}
+template <typename T>
+int Binary_Search_DSLKDon(NODE_DON *head, const T &x, Field input)
+{
+    NODE_DON *current = head;
+    int index = 0;
+    while (current)
+    {
+        string currentValue = getValue_DSLKDon(current->data, input);
+
+        // Check if x is an SV object
+        if constexpr (is_same_v<T, SV>)
+        {
+            string xValue = getValue(x, input);
+            if (currentValue == xValue)
+                return index;
+        }
+        else
+        {
+            // For other types (non-SV), directly compare with the field value
+            if (currentValue == x)
+                return index;
+        }
+
+        current = current->pNext_Don;
+        ++index;
+    }
+    return -1;
+}
+
+pNODE_DON findTailNode(pNODE_DON head)
+{
+    pNODE_DON current = head;
+    while (current != nullptr && current->pNext_Don != nullptr)
+    {
+        current = current->pNext_Don;
+    }
+    return current;
+}
+
+pNODE_DON partition(pNODE_DON low, pNODE_DON high, const string &input)
+{
+    SV pivot = high->data;
+    pNODE_DON i = low;
+
+    for (pNODE_DON j = low; j != high; j = j->pNext_Don)
+    {
+        if (getValue(j->data, input) < getValue(pivot, input))
+        {
+            swap(i->data, j->data);
+            i = i->pNext_Don;
+        }
+    }
+    swap(i->data, high->data);
+    return i;
+}
+
+void quickSort_DSLKDon(pNODE_DON low, pNODE_DON high, const string &input)
+{
+    if (low != nullptr && high != nullptr && low != high && low != high->pNext_Don)
+    {
+        pNODE_DON pivotNode = partition(low, high, input);
+        quickSort_DSLKDon(low, pivotNode, input);
+        quickSort_DSLKDon(pivotNode->pNext_Don, high, input);
+    }
+}
+
+void quickSortLinkedList(LIST_DON &listDon, const string &input)
+{
+    if (listDon.pHead_Don == nullptr || listDon.pHead_Don->pNext_Don == nullptr)
+    {
+        return; // Danh sách rỗng hoặc chỉ có một node
+    }
+
+    // Tìm node cuối cùng của danh sách
+    pNODE_DON tail = findTailNode(listDon.pHead_Don);
+
+    quickSort_DSLKDon(listDon.pHead_Don, tail, input);
+}
 
 //----------------
 
@@ -323,33 +385,6 @@ void luaChonXuatTenDaoNguoc(SV LIST_MANG[], int &soLuongSinhVien, const vector<i
             break;
         }
     }
-}
-
-//----------------- Phần thêm SV vào cuối
-// Hàm thêm vào cuối DSLK Dơn
-void themVaoCuoiDSLKDon(LIST_DON &listDon, pNODE_DON p)
-{
-    if (listDon.pHead_Don == NULL)
-    {
-        listDon.pHead_Don = p;
-    }
-    else
-    {
-        pNODE_DON temp = listDon.pHead_Don;
-        while (temp->pNext_Don != NULL)
-        {
-            temp = temp->pNext_Don;
-        }
-        temp->pNext_Don = p;
-    }
-}
-
-void themSinhVienDSLKDon(LIST_DON &listDon)
-{
-    cout << "- Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
-    pNODE_DON p = khoiTaoNodeDon(sv);
-    themVaoCuoiDSLKDon(listDon, p);
 }
 
 //----------------
@@ -594,9 +629,35 @@ void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- M�
     }
 }
 
-void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
+//----------------- Phần thêm SV vào cuối
+// Hàm thêm vào cuối DSLK Dơn
+void themVaoCuoiDSLKDon(LIST_DON &listDon, pNODE_DON p)
 {
+    if (listDon.pHead_Don == NULL)
+    {
+        listDon.pHead_Don = p;
+    }
+    else
+    {
+        pNODE_DON temp = listDon.pHead_Don;
+        while (temp->pNext_Don != NULL)
+        {
+            temp = temp->pNext_Don;
+        }
+        temp->pNext_Don = p;
+    }
+}
 
+void themSinhVienDSLKDon(LIST_DON &listDon)
+{
+    cout << "- Them sinh vien tiep theo: ";
+    SV sv = nhapThongTinSinhVien();
+    pNODE_DON p = khoiTaoNodeDon(sv);
+    themVaoCuoiDSLKDon(listDon, p);
+}
+
+void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
+{
     int lc;
     while (true)
     {
@@ -608,7 +669,6 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
         cout << "\n\t  3. Tim theo ten.";
         cout << "\n\t  4. Tim theo lop.";
         cout << "\n\t  5. Tim theo diem.";
-
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> lc;
@@ -618,20 +678,27 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
         case 1:
         {
             cin.ignore();
-            int index = 0;
             cout << "\n\tNhap ma sinh vien can tim : ";
             string mssvCanTim = "";
             getline(cin, mssvCanTim);
-            // int result = Binary_Search(listDon.pHead_Don, mssvCanTim, Field::MaSV);
-            /* if (result == 0)
-             {
-                 xuat(listDon.pHead_Don->data, index++);
-                 system("pause");
-             }
-             else
-             {
-                 cout << "Not found" << endl;
-             }*/
+            formMssv(mssvCanTim);
+            // --- sap xep
+            // quickSortLinkedList(listDon, "maSV");
+            int result = Binary_Search_DSLKDon(listDon.pHead_Don, mssvCanTim, Field::MaSV);
+            if (result != -1)
+            {
+                pNODE_DON current = listDon.pHead_Don;
+                for (int i = 0; i < result; ++i)
+                {
+                    current = current->pNext_Don;
+                }
+                xuat(current->data);
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
+            system("pause");
             break;
         }
 
@@ -641,6 +708,27 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
             cout << "\n\tNhap ho sinh vien can tim : ";
             string hoCanTim = "";
             getline(cin, hoCanTim);
+            formChu(hoCanTim);
+            // --- sap xep
+            // quickSortLinkedList(listDon, "ho");
+            int result = Binary_Search_DSLKDon(listDon.pHead_Don, hoCanTim, Field::Ho);
+            if (result != -1)
+            {
+                pNODE_DON current = listDon.pHead_Don;
+                while (current != nullptr)
+                {
+                    if (current->data.ho == hoCanTim)
+                    {
+                        xuat(current->data);
+                    }
+                    current = current->pNext_Don;
+                }
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
+            system("pause");
             break;
         }
 
@@ -650,6 +738,27 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
             cout << "\n\tNhap ten sinh vien can tim : ";
             string tenCanTim = "";
             getline(cin, tenCanTim);
+            formChu(tenCanTim);
+            // --- sap xep
+            // quickSortLinkedList(listDon, "ten");
+            int result = Binary_Search_DSLKDon(listDon.pHead_Don, tenCanTim, Field::Ten);
+            if (result != -1)
+            {
+                pNODE_DON current = listDon.pHead_Don;
+                while (current != nullptr)
+                {
+                    if (current->data.ten == tenCanTim)
+                    {
+                        xuat(current->data);
+                    }
+                    current = current->pNext_Don;
+                }
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
+            system("pause");
             break;
         }
 
@@ -659,6 +768,27 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
             cout << "\n\tNhap lop sinh vien can tim : ";
             string lopCanTim = "";
             getline(cin, lopCanTim);
+            formMssv(lopCanTim);
+            // --- sap xep
+            // quickSortLinkedList(listDon, "lop");
+            int result = Binary_Search_DSLKDon(listDon.pHead_Don, lopCanTim, Field::Lop);
+            if (result != -1)
+            {
+                pNODE_DON current = listDon.pHead_Don;
+                while (current != nullptr)
+                {
+                    if (current->data.lop == lopCanTim)
+                    {
+                        xuat(current->data);
+                    }
+                    current = current->pNext_Don;
+                }
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
+            system("pause");
             break;
         }
 
@@ -667,36 +797,109 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon) //  ---------- ĐƠN
             cout << "\n\tNhap diem sinh vien can tim : ";
             float diemCanTim;
             cin >> diemCanTim;
+            // --- sap xep
+            // quickSortLinkedList(listDon, "diem");
+            int result = Binary_Search_DSLKDon(listDon.pHead_Don, to_string(diemCanTim), Field::Diem);
+            if (result != -1)
+            {
+                pNODE_DON current = listDon.pHead_Don;
+                while (current != nullptr)
+                {
+                    if (current->data.diem == diemCanTim)
+                    {
+                        xuat(current->data);
+                    }
+                    current = current->pNext_Don;
+                }
+            }
+            else
+            {
+                cout << "Not found" << endl;
+            }
+            system("pause");
             break;
         }
+        }
+    }
+}
 
-        default:
-            break;
-        }
-        system("pause");
+void themSinhVienVaoDanhSach(LIST_DON &listDon, SV sv)
+{
+    pNODE_DON p = khoiTaoNodeDon(sv);
+    if (listDon.pHead_Don == NULL)
+    {
+        listDon.pHead_Don = p;
+    }
+    else
+    {
+        p->pNext_Don = listDon.pHead_Don;
+        listDon.pHead_Don = p;
     }
 }
 
 int main()
 {
     // test chuong trinh
-    int soLuong = 7;
-    SV listMang[100] = {{"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
+    /*int soLuong = 7;
+    SV listMang[100] = { {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
                         {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
                         {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.0},
                         {"N22DCAT022", "La", "Binh", "D22CQCN02 - N", 8.0},
                         {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.0},
                         {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0},
-                        {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1}};
+                        {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1} };
 
-    timKiemSinhVienMang(listMang, soLuong);
+    timKiemSinhVienMang(listMang, soLuong);*/
 
-    /*LIST_DON listDon;
+    LIST_DON listDon;
     khoitaoDSLKDon(listDon);
 
-    themSinhVienDSLKDon(listDon);
+    // Danh sách sinh viên được khởi tạo sẵn
+    SV sv1 = {"001", "Nguyen", "A", "K18CLC1", 8.5};
+    SV sv2 = {"002", "Tran", "B", "K18CLC2", 7.0};
+    SV sv3 = {"003", "Le", "Van C", "K18CLC3", 9.0};
+    SV sv4 = {"004", "Le", "A", "K18CLC3", 9.0};
+    SV sv5 = {"005", "Le", "C", "K18CLC2", 7.0};
+    SV sv6 = {"006", "Le", "B", "K18CLC1", 8.5};
 
-    timKiemSinhVienDanhSachLkDon(listDon);*/
+    themSinhVienVaoDanhSach(listDon, sv1);
+    themSinhVienVaoDanhSach(listDon, sv2);
+    themSinhVienVaoDanhSach(listDon, sv3);
+    themSinhVienVaoDanhSach(listDon, sv4);
+    themSinhVienVaoDanhSach(listDon, sv5);
+    themSinhVienVaoDanhSach(listDon, sv6);
+
+    int choice;
+    while (true)
+    {
+        system("cls");
+        cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
+        cout << "\t======================= MENU =======================";
+        cout << "\n\t  1. Them sinh vien.";
+        cout << "\n\t  2. Tim kiem sinh vien.";
+        cout << "\n\t======================= END =======================";
+        cout << "\n\n\t - Nhap lua chon: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+        {
+            SV newSV = nhapThongTinSinhVien();
+            themSinhVienVaoDanhSach(listDon, newSV);
+            break;
+        }
+
+        case 2:
+        {
+            timKiemSinhVienDanhSachLkDon(listDon);
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
 
     return 0;
 }

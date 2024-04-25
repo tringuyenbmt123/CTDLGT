@@ -40,6 +40,10 @@ void xuat(SV sv)
     cout << left << setw(32) << sv.maSV << setw(30) << sv.ho + " " + sv.ten << setw(20) << sv.lop << setw(10) << sv.diem << endl;
 }
 
+
+
+// --------------------------------------- MẢNG
+
 void themSinhVienMang(SV sv[], int &soLuongSinhVienMang, int index)
 {
 
@@ -61,6 +65,36 @@ void xuatSinhVienMang(SV LIST_MANG[], int &soLuongSinhVienMang, int index)
         cout << endl;
     }
 }
+
+// --------------------------- DSLK ĐƠN
+// Hàm thêm vào cuối DSLK Dơn
+void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
+{
+    if (listDon.pHead_Don == NULL)
+    {
+        listDon.pHead_Don = p;
+    }
+    else
+    {
+        pNODE_DON temp = listDon.pHead_Don;
+        while (temp->pNext_Don != NULL)
+        {
+            temp = temp->pNext_Don;
+        }
+        temp->pNext_Don = p;
+    }
+}
+
+void themSinhVienDSLKDon(LIST_DON& listDon)
+{
+    cout << "- Them sinh vien tiep theo: ";
+    SV sv = nhapThongTinSinhVien();
+    pNODE_DON p = khoiTaoNodeDon(sv);
+    themVaoCuoiDSLKDon(listDon, p);
+}
+
+
+
 
 void xuatDSLKDon(LIST_DON listDon)
 {

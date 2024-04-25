@@ -16,6 +16,22 @@ typedef struct listKep
 } LIST_KEP;
 
 // ---------------------------------  tu them
+
+pNODE_KEP khoiTaoNodeKep(SV sv) // ------------ kép
+{
+    pNODE_KEP p = new NODE_KEP;
+    if (p == NULL)
+    {
+        exit(1);
+    }
+    p->data = sv;
+    p->pNext_Kep = NULL;
+    p->pPrev_Kep = NULL;
+
+    return p;
+}
+
+
 void khoiTaoDSLKKep(LIST_KEP& listKep)
 {
     listKep.pHead_Kep = NULL;

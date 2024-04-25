@@ -1,17 +1,16 @@
- int soLuong = 7;
-    SV listMang[7] = {{"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.5},
-                      {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
-                      {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.0},
-                      {"N22DCAT022", "La", "Binh", "D22CQCN02 - N", 8.0},
-                      {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.0},
-                      {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0},
-                      {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.1}};
+std::vector<node_Don*> sequentialSearch(node_Don* head, const std::string& field, const T &value) {
+    std::vector<node_Don*> result;  // Vector lưu trữ các nút phù hợp
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(2) << value;  // Định dạng giá trị giống như trong getValue
+    std::string valueAsString = ss.str();  // Lưu chuỗi từ stringstream
 
-    // timKiemSinhVienMang(listMang, soLuong);
-
-    themSinhVienMang(listMang, soLuong, 1);
-    for (int i = 0; i < soLuong; i++)
-    {
-        xuat(listMang[i]);
-        cout << endl;
+    node_Don* current = head;
+    while (current != nullptr) {
+        std::string currentFieldValue = getValue(current->data, field);  // Lấy giá trị dựa trên trường đã cho
+        if (currentFieldValue == valueAsString) {  // So sánh chuỗi
+            result.push_back(current);  // Thêm nút phù hợp vào vector
+        }
+        current = current->pNext_Don;
     }
+    return result;  // Trả về vector chứa các nút phù hợp
+}

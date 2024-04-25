@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <time.h>
 #include <chrono>
-
+#include<vector>
 using namespace std;
 
 typedef struct sinhVien

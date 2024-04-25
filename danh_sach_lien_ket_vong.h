@@ -14,6 +14,21 @@ typedef struct listVong
 } LIST_VONG;
 
 // ----------------- tu them
+
+
+pNODE_VONG khoiTaoNodeVong(SV sv) // ----------- vòng
+{
+    pNODE_VONG p = new NODE_VONG;
+    if (p == NULL)
+    {
+        exit(1);
+    }
+    p->data = sv;
+    p->pNext_Vong = NULL;
+
+    return p;
+}
+
 void khoiTaoDSLK(LIST_VONG &listVong)
 {
     listVong.pTail_Vong = NULL; // Khởi tạo pTail là NULL khi danh sách rỗng

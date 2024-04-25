@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "structSinhVien.h"
 typedef struct node_Don
 {
@@ -14,6 +14,22 @@ typedef struct listDon
 } LIST_DON;
 
 // ---------------------------------  tu them
+pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
+{
+    pNODE_DON p = new NODE_DON;
+    if (p == NULL)
+    {
+        exit(1);
+    }
+    p->data = sv;
+    p->pNext_Don = NULL;
+
+    return p;
+}
+
+
+
+
 
 void khoitaoDSLKDon(LIST_DON& listDon)
 {

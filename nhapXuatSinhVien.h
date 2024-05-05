@@ -5,6 +5,56 @@
 #include <algorithm>
 #include "danh_sach_lien_ket_don.h"
 
+// định dạng form chữ
+string formChu(string& str) // chỉ dùng cho chữ , ko được dùng số
+{
+    while (str[0] == ' ')
+    {
+        str.erase(str.begin() + 0);
+    }
+
+    while (str[str.length() - 1] == ' ')
+    {
+        // xóa kí tự tại vị trí 0
+        str.erase(str.begin() + str.length() - 1);
+    }
+
+    for (int i = 0; i < str.length() - 1; i++)
+    {
+        if (str[i] == ' ' && str[i + 1] == ' ')
+        {
+            str.erase(str.begin() + i);
+            i--;
+        }
+    }
+
+    transform(str.begin(), str.end(), str.begin(), ::tolower); // CHUYEN SANG CHU THUONG
+    int i = 1;
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (str[i] == ' ')
+        {
+            str[i + 1] = str[i + 1] - 32;
+        }
+    }
+    str[0] = str[0] - 32;
+    return str;
+}
+
+string formMssv(string& str)
+{
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (str[i] >= 97 && str[i] <= 122)
+        {
+            str[i] = str[i] - 32;
+        }
+    }
+    return str;
+}
+
+
+
 SV nhapThongTinSinhVien()
 {
     SV sv;
@@ -12,16 +62,16 @@ SV nhapThongTinSinhVien()
 
     cout << "\n\t- Nhap ma SV: ";
     getline(cin, sv.maSV);
-
+    formMssv(sv.maSV);
     cout << "\n\t- Nhap ho SV: ";
     getline(cin, sv.ho);
-
+    formChu(sv.ho);
     cout << "\n\t- Nhap ten SV: ";
     getline(cin, sv.ten);
-
+    formChu(sv.ten);
     cout << "\n\t- Nhap lop cua SV: ";
     getline(cin, sv.lop);
-
+    formMssv(sv.lop);
     cout << "\n\t- Nhap diem sinh cua SV: ";
     cin >> sv.diem;
 

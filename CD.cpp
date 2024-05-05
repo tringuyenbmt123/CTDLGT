@@ -27,53 +27,9 @@ void SET_COLOR(int color)
         SetConsoleTextAttribute(hStdOut, wColor);
     }
 }
-// định dạng form chữ
-string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
-{
-    while (str[0] == ' ')
-    {
-        str.erase(str.begin() + 0);
-    }
 
-    while (str[str.length() - 1] == ' ')
-    {
-        // xóa kí tự tại vị trí 0
-        str.erase(str.begin() + str.length() - 1);
-    }
 
-    for (int i = 0; i < str.length() - 1; i++)
-    {
-        if (str[i] == ' ' && str[i + 1] == ' ')
-        {
-            str.erase(str.begin() + i);
-            i--;
-        }
-    }
 
-    transform(str.begin(), str.end(), str.begin(), ::tolower); // CHUYEN SANG CHU THUONG
-    int i = 1;
-    for (int i = 0; i < str.length(); i++)
-    {
-        if (str[i] == ' ')
-        {
-            str[i + 1] = str[i + 1] - 32;
-        }
-    }
-    str[0] = str[0] - 32;
-    return str;
-}
-
-string formMssv(string &str)
-{
-    for (int i = 0; i < str.length(); i++)
-    {
-        if (str[i] >= 97 && str[i] <= 122)
-        {
-            str[i] = str[i] - 32;
-        }
-    }
-    return str;
-}
 
 enum class Field
 {
@@ -184,27 +140,6 @@ void quickSort(SV a[], int l, int r, const string &input)
 
 // ----------------------------------------Phần dành cho DSLK Đơn
 
-template <typename T>
-node_Don *sequentialSearch(node_Don *head, const string &field, const T &value)
-{
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(2) << value; // Định dạng giống như trong getValue
-    string valueAsString = ss.str();                   // Lưu chuỗi từ stringstream
-
-    node_Don *current = head;
-    while (current != nullptr)
-    {
-        string currentFieldValue = getValue(current->data, field); // Lấy giá trị dựa trên trường đã cho
-        if (currentFieldValue == valueAsString)
-        {                   // So sánh chuỗi
-            return current; // Tìm thấy và trả về nút chứa SV
-        }
-        current = current->pNext_Don;
-    }
-    return nullptr; // Không tìm thấy
-}
-
-
 //----------------
 
 string TenDaoNguoc(string str)
@@ -274,54 +209,6 @@ void luaChonXuatTenDaoNguocMang(SV LIST_MANG[], int &soLuongSinhVien, const vect
         }
     }
 }
-
-//--------- dslk đơn
-void luaChonXuatTenDaoNguocDSLKDon(node_Don* head, int thoiGianTimKiem) {
-    int lc;
-    bool backToSearchMenu = false;
-
-    while (!backToSearchMenu) {
-        system("cls");  // Xóa màn hình
-        cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?";
-        cout << "\n\t  1. YES";
-        cout << "\n\t  2. NO";
-        cout << "\n\t  3. Quay lai menu tim kiem";
-        cout << "\n\t - Nhap lua chon: ";
-        cin >> lc;
-
-        switch (lc) {
-        case 1: {
-            for (node_Don* p = head; p != nullptr; p = p->pNext_Don) {
-                string reversedName = TenDaoNguoc(p->data.ten);
-                string reversedHo = TenDaoNguoc(p->data.ho);
-                cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
-                xuat(p->data);
-            }
-            cout << "\n\t--------Thoi gian tim kiem-------: " << thoiGianTimKiem << endl;
-            system("pause");
-            break;
-        }
-
-        case 2: {
-            for (node_Don* p = head; p != nullptr; p = p->pNext_Don) {
-                xuat(p->data);
-            }
-            cout << "\n\t--------Thoi gian tim kiem-------: " << thoiGianTimKiem << endl;
-            system("pause");
-            break;
-        }
-
-        case 3: {
-            backToSearchMenu = true;
-            break;
-        }
-
-        default:
-            break;
-        }
-    }
-}
-
 
 //----------------
 void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- MẠNG
@@ -567,6 +454,83 @@ void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- M�
 
 //----------------- Phần thêm SV vào cuối
 
+//--------- dslk đơn
+void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const string &value)
+{
+    int lc;
+    bool backToSearchMenu = false;
+
+    while (!backToSearchMenu)
+    {
+        system("cls"); // Xóa màn hình
+        cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?";
+        cout << "\n\t  1. YES";
+        cout << "\n\t  2. NO";
+        cout << "\n\t  3. Quay lai menu tim kiem";
+        cout << "\n\t - Nhap lua chon: ";
+        cin >> lc;
+
+        switch (lc)
+        {
+        case 1:
+        {
+            node_Don *p = NULL;
+
+            p = listDon.pHead_Don;
+            while (p != NULL)
+            {
+                if (getValue(p->data, field) == value)
+                {
+                   
+                    string reversedName = TenDaoNguoc(p->data.ten);
+                    string reversedHo = TenDaoNguoc(p->data.ho);
+                    cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
+                    SET_COLOR(RED);
+                    xuat(p->data);
+                    SET_COLOR(WHITE);
+                }
+
+                p = p->pNext_Don;
+            }
+
+            system("pause");
+            break;
+        }
+
+        case 2:
+        {
+            node_Don *p = NULL;
+
+            p = listDon.pHead_Don;
+            while (p != NULL)
+            {
+                if (getValue(p->data, field) == value)
+                {
+                    SET_COLOR(RED);
+
+                    xuat(p->data);
+                    SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
+                }
+
+                p = p->pNext_Don;
+            }
+
+            system("pause");
+            break;
+        }
+
+        case 3:
+        {
+            backToSearchMenu = true;
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
+}
+
 void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
 {
     int lc;
@@ -595,19 +559,14 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             formMssv(mssvCanTim);
 
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
-            node_Don *found = sequentialSearch<string>(listDon.pHead_Don, "maSV", mssvCanTim);
+
+            luaChonXuatTenDaoNguocDSLKDon(listDon, "maSV", mssvCanTim);
+
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (found != nullptr)
-            {
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
 
-                xuat(found->data);
-            }
-            else
-            {
-                cout << "not see" << endl;
-            }
             system("pause");
             break;
         }
@@ -621,19 +580,13 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             formChu(hoCanTim);
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
 
-            node_Don *found = sequentialSearch<string>(listDon.pHead_Don, "ho", hoCanTim);
+            luaChonXuatTenDaoNguocDSLKDon(listDon, "ho", hoCanTim);
+
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (found != nullptr)
-            {
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
 
-                xuat(found->data);
-            }
-            else
-            {
-                cout << "not see" << endl;
-            }
             system("pause");
             break;
         }
@@ -646,20 +599,13 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             getline(cin, tenCanTim);
             formChu(tenCanTim);
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+            luaChonXuatTenDaoNguocDSLKDon(listDon, "ten", tenCanTim);
 
-            node_Don *found = sequentialSearch<string>(listDon.pHead_Don, "ten", tenCanTim);
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (found != nullptr)
-            {
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
 
-                xuat(found->data);
-            }
-            else
-            {
-                cout << "not see" << endl;
-            }
             system("pause");
             break;
         }
@@ -673,19 +619,13 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             formMssv(lopCanTim);
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
 
-            node_Don *found = sequentialSearch<string>(listDon.pHead_Don, "lop", lopCanTim);
+            luaChonXuatTenDaoNguocDSLKDon(listDon, "lop", lopCanTim);
+
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (found != nullptr)
-            {
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
 
-                xuat(found->data);
-            }
-            else
-            {
-                cout << "not see" << endl;
-            }
             system("pause");
             break;
         }
@@ -695,21 +635,17 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             cout << "\n\tNhap diem sinh vien can tim : ";
             float diemCanTim;
             cin >> diemCanTim;
+            ostringstream convert;
+            convert << fixed << setprecision(2) << diemCanTim; // Make sure this precision matches what getValue uses
+            string tam = convert.str();
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+            luaChonXuatTenDaoNguocDSLKDon(listDon, "diem", tam);
 
-            node_Don *found = sequentialSearch<float>(listDon.pHead_Don, "diem", diemCanTim);
             auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
             auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (found != nullptr)
-            {
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
 
-                xuat(found->data);
-            }
-            else
-            {
-                cout << "\nnot found  !!!" << endl;
-            }
             system("pause");
             break;
         }
@@ -756,6 +692,9 @@ int main()
     SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
     SV sv5 = {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0};
     SV sv6 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    SV sv7 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
 
     themSinhVienVaoDanhSach(listDon, sv1);
     themSinhVienVaoDanhSach(listDon, sv2);
@@ -763,6 +702,9 @@ int main()
     themSinhVienVaoDanhSach(listDon, sv4);
     themSinhVienVaoDanhSach(listDon, sv5);
     themSinhVienVaoDanhSach(listDon, sv6);
+    themSinhVienVaoDanhSach(listDon, sv7);
+    themSinhVienVaoDanhSach(listDon, sv8);
+    themSinhVienVaoDanhSach(listDon, sv9);
 
     int choice;
     while (true)
@@ -781,6 +723,7 @@ int main()
         case 1:
         {
             SV newSV = nhapThongTinSinhVien();
+            
             themSinhVienVaoDanhSach(listDon, newSV);
             break;
         }

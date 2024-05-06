@@ -6,7 +6,7 @@
 #include "danh_sach_lien_ket_don.h"
 
 // định dạng form chữ
-string formChu(string& str) // chỉ dùng cho chữ , ko được dùng số
+string formChu(string &str) // chỉ dùng cho chữ , ko được dùng số
 {
     while (str[0] == ' ')
     {
@@ -41,7 +41,7 @@ string formChu(string& str) // chỉ dùng cho chữ , ko được dùng số
     return str;
 }
 
-string formMssv(string& str)
+string formMssv(string &str)
 {
     for (int i = 0; i < str.length(); i++)
     {
@@ -52,8 +52,6 @@ string formMssv(string& str)
     }
     return str;
 }
-
-
 
 SV nhapThongTinSinhVien()
 {
@@ -90,8 +88,6 @@ void xuat(SV sv)
     cout << left << setw(32) << sv.maSV << setw(30) << sv.ho + " " + sv.ten << setw(20) << sv.lop << setw(10) << sv.diem << endl;
 }
 
-
-
 // --------------------------------------- MẢNG
 
 void themSinhVienMang(SV sv[], int &soLuongSinhVienMang, int index)
@@ -118,7 +114,7 @@ void xuatSinhVienMang(SV LIST_MANG[], int &soLuongSinhVienMang, int index)
 
 // --------------------------- DSLK ĐƠN
 // Hàm thêm vào cuối DSLK Dơn
-void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
+void themVaoCuoiDSLKDon(LIST_DON &listDon, pNODE_DON p)
 {
     if (listDon.pHead_Don == NULL)
     {
@@ -135,7 +131,7 @@ void themVaoCuoiDSLKDon(LIST_DON& listDon, pNODE_DON p)
     }
 }
 
-void themSinhVienDSLKDon(LIST_DON& listDon)
+void themSinhVienDSLKDon(LIST_DON &listDon)
 {
     cout << "- Them sinh vien tiep theo: ";
     SV sv = nhapThongTinSinhVien();
@@ -143,14 +139,51 @@ void themSinhVienDSLKDon(LIST_DON& listDon)
     themVaoCuoiDSLKDon(listDon, p);
 }
 
-
-
-
 void xuatDSLKDon(LIST_DON listDon)
 {
     int index = 0;
     for (pNODE_DON p = listDon.pHead_Don; p != NULL; p = p->pNext_Don)
     {
         xuat(p->data);
+    }
+}
+
+// Ham them vao cuoi
+void themVaoCuoiDSLKVong(LIST_VONG &listVong, pNODE_VONG p)
+{
+    // Danh sach rong
+    if (listVong.pTail_Vong == NULL)
+    {
+        listVong.pTail_Vong = p;
+        p->pNext_Vong = p; // Khi danh sách rỗng, pNext của phần tử đầu tiên trỏ lại chính nó
+    }
+    else
+    {
+        p->pNext_Vong = listVong.pTail_Vong->pNext_Vong; // Liên kết phần tử mới với phần tử đầu tiên
+        listVong.pTail_Vong->pNext_Vong = p;             // Liên kết phần tử cuối cùng với phần tử mới
+        listVong.pTail_Vong = p;                         // Cập nhật pTail để trỏ đến phần tử mới
+    }
+}
+
+void themSVVaoCuoiDSLKVong(LIST_VONG &listVong)
+{
+    cout << "\n\t - Them sinh vien tiep theo: ";
+    SV sv = nhapThongTinSinhVien();
+    pNODE_VONG p = new NODE_VONG;
+    p->data = sv;
+    p->pNext_Vong = NULL;
+    themVaoCuoiDSLKVong(listVong, p);
+}
+
+void xuatDSLKVong(LIST_VONG listVong)
+{
+    if (listVong.pTail_Vong != NULL)
+    {
+        pNODE_VONG p = listVong.pTail_Vong->pNext_Vong; // Bắt đầu duyệt từ phần tử đầu tiên
+        do
+        {
+            xuat(p->data);
+            p = p->pNext_Vong;
+        } while (p != listVong.pTail_Vong->pNext_Vong); // Duyệt từ đầu đến cuối danh sách
     }
 }

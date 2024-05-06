@@ -4,10 +4,10 @@
 typedef struct node_Kep
 {
     SV data;
-    node_Kep* pNext_Kep;
-    node_Kep* pPrev_Kep;
+    node_Kep *pNext_Kep;
+    node_Kep *pPrev_Kep;
 } NODE_KEP;
-typedef NODE_KEP* pNODE_KEP;
+typedef NODE_KEP *pNODE_KEP;
 
 typedef struct listKep
 {
@@ -31,8 +31,7 @@ pNODE_KEP khoiTaoNodeKep(SV sv) // ------------ kép
     return p;
 }
 
-
-void khoiTaoDSLKKep(LIST_KEP& listKep)
+void khoiTaoDSLKKep(LIST_KEP &listKep)
 {
     listKep.pHead_Kep = NULL;
     listKep.pTail_Kep = NULL;

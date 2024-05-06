@@ -3,10 +3,10 @@
 typedef struct node_Don
 {
     SV data;
-    node_Don* pNext_Don;
+    node_Don *pNext_Don;
 } NODE_DON;
 
-typedef NODE_DON* pNODE_DON;
+typedef NODE_DON *pNODE_DON;
 
 typedef struct listDon
 {
@@ -27,11 +27,7 @@ pNODE_DON khoiTaoNodeDon(SV sv) // ----------- ĐƠN
     return p;
 }
 
-
-
-
-
-void khoitaoDSLKDon(LIST_DON& listDon)
+void khoitaoDSLKDon(LIST_DON &listDon)
 {
     listDon.pHead_Don = NULL;
 }

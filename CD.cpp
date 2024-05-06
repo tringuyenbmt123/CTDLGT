@@ -498,7 +498,6 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
 
                 if (getValue(p->data, field) == value && field != "ho")
                 {
-
                     string reversedName = TenDaoNguoc(p->data.ten);
                     string reversedHo = TenDaoNguoc(p->data.ho);
                     cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
@@ -523,13 +522,22 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
             while (p != NULL)
             {
 
-                if (getValue(p->data, field).find(value) != std::string::npos)
+                if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
                 {
 
                     SET_COLOR(RED);
                     xuat(p->data);
                     SET_COLOR(WHITE);
                 }
+
+                  if (getValue(p->data, field) == value && field != "ho")
+                {
+
+                    SET_COLOR(RED);
+                    xuat(p->data);
+                    SET_COLOR(WHITE);
+                }
+
                 p = p->pNext_Don;
             }
 
@@ -712,7 +720,7 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
             p = listVong.pTail_Vong;
             while (p != NULL)
             {
-                if (getValue(p->data, field) == value)
+                if (getValue(p->data, field) == value && field !="ho")
                 {
 
                     string reversedName = TenDaoNguoc(p->data.ten);
@@ -722,6 +730,18 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
                     xuat(p->data);
                     SET_COLOR(WHITE);
                 }
+
+                  if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
+                {
+                    string reversedName = TenDaoNguoc(p->data.ten);
+                    string reversedHo = TenDaoNguoc(p->data.ho);
+                    cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
+                    SET_COLOR(RED);
+                    xuat(p->data);
+                    SET_COLOR(WHITE);
+                }
+
+                
 
                 p = p->pNext_Vong;
             }
@@ -738,12 +758,20 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
             p = listVong.pTail_Vong;
             while (p != NULL)
             {
-                if (getValue(p->data, field) == value)
+                if (getValue(p->data, field) == value && field !="ho")
                 {
                     SET_COLOR(RED);
 
                     xuat(p->data);
                     SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
+                }
+
+                  if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
+                {
+
+                    SET_COLOR(RED);
+                    xuat(p->data);
+                    SET_COLOR(WHITE);
                 }
 
                 p = p->pNext_Vong;
@@ -916,33 +944,94 @@ int main()
     // timKiemSinhVienMang(listMang, soLuong);
 
     // test chuong trinh dslk đơn
-    LIST_DON listDon;
-    khoitaoDSLKDon(listDon);
+    // LIST_DON listDon;
+    // khoitaoDSLKDon(listDon);
 
-    // Danh sách sinh viên được khởi tạo sẵn
-    SV sv1 = { "N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.56 };
-    SV sv2 = { "N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2 };
-    SV sv3 = { "N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456 };
-    SV sv4 = { "N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333 };
-    SV sv5 = { "N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0 };
-    SV sv6 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
-    SV sv7 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
-    SV sv8 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
-    SV sv9 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+    // // Danh sách sinh viên được khởi tạo sẵn
+    // SV sv1 = { "N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.56 };
+    // SV sv2 = { "N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2 };
+    // SV sv3 = { "N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456 };
+    // SV sv4 = { "N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333 };
+    // SV sv5 = { "N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0 };
+    // SV sv6 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv7 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv8 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv9 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
 
-    themSinhVienVaoDanhSachLKDon(listDon, sv1);
-    themSinhVienVaoDanhSachLKDon(listDon, sv2);
-    themSinhVienVaoDanhSachLKDon(listDon, sv3);
-    themSinhVienVaoDanhSachLKDon(listDon, sv4);
-    themSinhVienVaoDanhSachLKDon(listDon, sv5);
-    themSinhVienVaoDanhSachLKDon(listDon, sv6);
-    themSinhVienVaoDanhSachLKDon(listDon, sv7);
-    themSinhVienVaoDanhSachLKDon(listDon, sv8);
-    themSinhVienVaoDanhSachLKDon(listDon, sv9);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv1);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv2);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv3);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv4);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv5);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv6);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv7);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv8);
+    // themSinhVienVaoDanhSachLKDon(listDon, sv9);
 
-    int choice;
-    while (true)
-    {
+    // int choice;
+    // while (true)
+    // {
+    //     system("cls");
+    //     cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
+    //     cout << "\t======================= MENU =======================";
+    //     cout << "\n\t  1. Them sinh vien.";
+    //     cout << "\n\t  2. Tim kiem sinh vien.";
+    //     cout << "\n\t======================= END =======================";
+    //     cout << "\n\n\t - Nhap lua chon: ";
+    //     cin >> choice;
+    //     switch (choice)
+    //     {
+    //     case 1:
+    //     {
+    //         SV newSV = nhapThongTinSinhVien();
+
+    //         themSinhVienVaoDanhSachLKDon(listDon, newSV);
+    //         break;
+    //     }
+    //     case 2:
+    //     {
+    //         timKiemSinhVienDanhSachLkDon(listDon);
+    //         break;
+    //     }
+    //     case 3:
+    //     {
+    //         xuatDSLKDon(listDon);
+    //         system("pause");
+    //         break;
+    //     }
+    //     default:
+    //         break;
+    //     }
+   // }
+
+     //// test chuong trinh dslk vòng
+     LIST_VONG listVong;
+     khoiTaoDSLK(listVong);
+
+     // Danh sách sinh viên được khởi tạo sẵn
+     SV sv1 = {"N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56};
+     SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
+     SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
+     SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
+     SV sv5 = {"N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0};
+     SV sv6 = {"N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8};
+     SV sv7 = {"N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8};
+     SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+     SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+
+     themSinhVienVaoDanhSachLKVong(listVong, sv1);
+     themSinhVienVaoDanhSachLKVong(listVong, sv2);
+     themSinhVienVaoDanhSachLKVong(listVong, sv3);
+     themSinhVienVaoDanhSachLKVong(listVong, sv4);
+     themSinhVienVaoDanhSachLKVong(listVong, sv5);
+     themSinhVienVaoDanhSachLKVong(listVong, sv6);
+     themSinhVienVaoDanhSachLKVong(listVong, sv7);
+     themSinhVienVaoDanhSachLKVong(listVong, sv8);
+     themSinhVienVaoDanhSachLKVong(listVong, sv9);
+
+     int choice;
+     while (true)
+     {
         system("cls");
         cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
         cout << "\t======================= MENU =======================";
@@ -951,95 +1040,34 @@ int main()
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> choice;
+
         switch (choice)
         {
         case 1:
         {
             SV newSV = nhapThongTinSinhVien();
 
-            themSinhVienVaoDanhSachLKDon(listDon, newSV);
+            themSinhVienVaoDanhSachLKVong(listVong, newSV);
             break;
         }
+
         case 2:
         {
-            timKiemSinhVienDanhSachLkDon(listDon);
+            timKiemSinhVienDanhSachLkVong(listVong);
             break;
         }
+
         case 3:
         {
-            xuatDSLKDon(listDon);
+            xuatDSLKVong(listVong);
             system("pause");
             break;
         }
+
         default:
             break;
         }
-    }
-
-     //// test chuong trinh dslk vòng
-     //LIST_VONG listVong;
-     //khoiTaoDSLK(listVong);
-
-     //// Danh sách sinh viên được khởi tạo sẵn
-     //SV sv1 = {"N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56};
-     //SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
-     //SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
-     //SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
-     //SV sv5 = {"N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0};
-     //SV sv6 = {"N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8};
-     //SV sv7 = {"N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8};
-     //SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-     //SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-
-     //themSinhVienVaoDanhSachLKVong(listVong, sv1);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv2);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv3);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv4);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv5);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv6);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv7);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv8);
-     //themSinhVienVaoDanhSachLKVong(listVong, sv9);
-
-     //int choice;
-     //while (true)
-     //{
-     //    system("cls");
-     //    cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
-     //    cout << "\t======================= MENU =======================";
-     //    cout << "\n\t  1. Them sinh vien.";
-     //    cout << "\n\t  2. Tim kiem sinh vien.";
-     //    cout << "\n\t======================= END =======================";
-     //    cout << "\n\n\t - Nhap lua chon: ";
-     //    cin >> choice;
-
-     //    switch (choice)
-     //    {
-     //    case 1:
-     //    {
-     //        SV newSV = nhapThongTinSinhVien();
-
-     //        themSinhVienVaoDanhSachLKVong(listVong, newSV);
-     //        break;
-     //    }
-
-     //    case 2:
-     //    {
-     //        timKiemSinhVienDanhSachLkVong(listVong);
-     //        break;
-     //    }
-
-     //    case 3:
-     //    {
-     //        xuatDSLKVong(listVong);
-     //        system("pause");
-     //        break;
-     //    }
-
-     //    default:
-     //        break;
-     //    }
-     //}
+     }
     return 0;
 }
 

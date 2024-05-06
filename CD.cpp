@@ -28,9 +28,6 @@ void SET_COLOR(int color)
     }
 }
 
-
-
-
 enum class Field
 {
     MaSV,
@@ -100,6 +97,23 @@ int Binary_Search(SV listMang[], int left, int right, const T &x, const string &
     {
         return Binary_Search(listMang, left, mid - 1, xAsString, input);
     }
+}
+
+template <typename T2>
+
+vector<int> Linear_Search_Substring(SV listMang[], int size, const T2 &substring, const string &field)
+{
+    vector<int> indices;
+    for (int i = 0; i < size; ++i)
+    {
+        string fieldValue = getValue(listMang[i], field);
+        // Check if the substring is part of the fieldValue
+        if (fieldValue.find(substring) != string::npos)
+        {
+            indices.push_back(i);
+        }
+    }
+    return indices;
 }
 
 // quick sort
@@ -276,34 +290,24 @@ void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- M�
             formChu(hoCanTim);
 
             // --- sap xep thử
-            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
+            // quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
 
             //-------------------
 
             auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+            vector<int> foundIndices = Linear_Search_Substring(LIST_MANG, soLuongSinhVien, hoCanTim, "ho");
 
-            int result_str = Binary_Search<string>(LIST_MANG, 0, soLuongSinhVien - 1, hoCanTim, "ho");
-
-            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
-            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            auto end = chrono::high_resolution_clock::now();                         // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start); // Tính thời gian
             int tgianTimKiem = duration.count();
-            if (result_str != -1)
+            if (!foundIndices.empty())
             {
-                vector<int> foundIndices;
-                for (int i = 0; i < soLuongSinhVien; ++i)
-                {
-                    if (LIST_MANG[i].ho == hoCanTim)
-                    {
-                        foundIndices.push_back(i);
-                    }
-                }
-                luaChonXuatTenDaoNguocMang(LIST_MANG, soLuongSinhVien, foundIndices, index, tgianTimKiem);
 
-                system("pause");
+                luaChonXuatTenDaoNguocMang(LIST_MANG, soLuongSinhVien, foundIndices, index, tgianTimKiem);
             }
             else
             {
-                cout << "Not found" << endl;
+                cout << "No matches found." << endl;
             }
 
             break;
@@ -479,9 +483,21 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const 
             p = listDon.pHead_Don;
             while (p != NULL)
             {
-                if (getValue(p->data, field) == value)
+                /* if (getValue(p->data, field) == value)
+                 {
+
+                     string reversedName = TenDaoNguoc(p->data.ten);
+                     string reversedHo = TenDaoNguoc(p->data.ho);
+                     cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
+                     SET_COLOR(RED);
+                     xuat(p->data);
+                     SET_COLOR(WHITE);
+                 }
+                 p = p->pNext_Don;*/
+
+                if (getValue(p->data, field).find(value) != std::string::npos)
                 {
-                   
+
                     string reversedName = TenDaoNguoc(p->data.ten);
                     string reversedHo = TenDaoNguoc(p->data.ho);
                     cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
@@ -489,7 +505,6 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const 
                     xuat(p->data);
                     SET_COLOR(WHITE);
                 }
-
                 p = p->pNext_Don;
             }
 
@@ -504,14 +519,23 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const 
             p = listDon.pHead_Don;
             while (p != NULL)
             {
-                if (getValue(p->data, field) == value)
+                // if (getValue(p->data, field) == value)
+                //{
+                //     SET_COLOR(RED);
+
+                //    xuat(p->data);
+                //    SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
+                //}
+
+                // p = p->pNext_Don;
+
+                if (getValue(p->data, field).find(value) != std::string::npos)
                 {
+
                     SET_COLOR(RED);
-
                     xuat(p->data);
-                    SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
+                    SET_COLOR(WHITE);
                 }
-
                 p = p->pNext_Don;
             }
 
@@ -670,81 +694,81 @@ void themSinhVienVaoDanhSach(LIST_DON &listDon, SV sv)
 int main()
 {
     // test chuong trinh mảng
-    // int soLuong = 7;
-    // SV listMang[100] = { {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.55},
-    //                     {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.0},
-    //                     {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123},
-    //                     {"N22DCAT022", "La", "Binh", "D22CQCN02 - N", 8.0555},
-    //                     {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.05},
-    //                     {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.4},
-    //                     {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.2101} };
+    int soLuong = 7;
+    SV listMang[100] = {{"N22DCPT001", "Nguyen Hung", "An", "D22CQPT01-N", 8.55},
+                        {"N22DCPT007", "Le Quoc", "Binh", "D22CQCN02-N", 7.0},
+                        {"N22DCCN112", "Lenh Dinh", "Gioi", "D22CQAT01-N", 9.123},
+                        {"N22DCAT022", "La Quang", "Binh", "D22CQCN02 - N", 8.0555},
+                        {"N22DCPT031", "Lung", "Binh", "D22CQAT01-N", 7.05},
+                        {"N22DCAT037", "Nguyen Dinh Quoc", "Binh", "D22CQAT01-N", 5.4},
+                        {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8.2101}};
 
-    // timKiemSinhVienMang(listMang, soLuong);
+    timKiemSinhVienMang(listMang, soLuong);
 
     // test chuong trinh dslk đơn
-    LIST_DON listDon;
-    khoitaoDSLKDon(listDon);
+    // LIST_DON listDon;
+    // khoitaoDSLKDon(listDon);
 
-    // Danh sách sinh viên được khởi tạo sẵn
-    SV sv1 = {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.56};
-    SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
-    SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
-    SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
-    SV sv5 = {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0};
-    SV sv6 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-    SV sv7 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-    SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-    SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    //// Danh sách sinh viên được khởi tạo sẵn
+    // SV sv1 = {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.56};
+    // SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
+    // SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
+    // SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
+    // SV sv5 = {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0};
+    // SV sv6 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    // SV sv7 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    // SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    // SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
 
-    themSinhVienVaoDanhSach(listDon, sv1);
-    themSinhVienVaoDanhSach(listDon, sv2);
-    themSinhVienVaoDanhSach(listDon, sv3);
-    themSinhVienVaoDanhSach(listDon, sv4);
-    themSinhVienVaoDanhSach(listDon, sv5);
-    themSinhVienVaoDanhSach(listDon, sv6);
-    themSinhVienVaoDanhSach(listDon, sv7);
-    themSinhVienVaoDanhSach(listDon, sv8);
-    themSinhVienVaoDanhSach(listDon, sv9);
+    // themSinhVienVaoDanhSach(listDon, sv1);
+    // themSinhVienVaoDanhSach(listDon, sv2);
+    // themSinhVienVaoDanhSach(listDon, sv3);
+    // themSinhVienVaoDanhSach(listDon, sv4);
+    // themSinhVienVaoDanhSach(listDon, sv5);
+    // themSinhVienVaoDanhSach(listDon, sv6);
+    // themSinhVienVaoDanhSach(listDon, sv7);
+    // themSinhVienVaoDanhSach(listDon, sv8);
+    // themSinhVienVaoDanhSach(listDon, sv9);
 
-    int choice;
-    while (true)
-    {
-        system("cls");
-        cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
-        cout << "\t======================= MENU =======================";
-        cout << "\n\t  1. Them sinh vien.";
-        cout << "\n\t  2. Tim kiem sinh vien.";
-        cout << "\n\t======================= END =======================";
-        cout << "\n\n\t - Nhap lua chon: ";
-        cin >> choice;
+    // int choice;
+    // while (true)
+    //{
+    //     system("cls");
+    //     cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
+    //     cout << "\t======================= MENU =======================";
+    //     cout << "\n\t  1. Them sinh vien.";
+    //     cout << "\n\t  2. Tim kiem sinh vien.";
+    //     cout << "\n\t======================= END =======================";
+    //     cout << "\n\n\t - Nhap lua chon: ";
+    //     cin >> choice;
 
-        switch (choice)
-        {
-        case 1:
-        {
-            SV newSV = nhapThongTinSinhVien();
-            
-            themSinhVienVaoDanhSach(listDon, newSV);
-            break;
-        }
+    //    switch (choice)
+    //    {
+    //    case 1:
+    //    {
+    //        SV newSV = nhapThongTinSinhVien();
+    //
+    //        themSinhVienVaoDanhSach(listDon, newSV);
+    //        break;
+    //    }
 
-        case 2:
-        {
-            timKiemSinhVienDanhSachLkDon(listDon);
-            break;
-        }
+    //    case 2:
+    //    {
+    //        timKiemSinhVienDanhSachLkDon(listDon);
+    //        break;
+    //    }
 
-        case 3:
-        {
-            xuatDSLKDon(listDon);
-            system("pause");
-            break;
-        }
+    //    case 3:
+    //    {
+    //        xuatDSLKDon(listDon);
+    //        system("pause");
+    //        break;
+    //    }
 
-        default:
-            break;
-        }
-    }
+    //    default:
+    //        break;
+    //    }
+    //}
 
     return 0;
 }

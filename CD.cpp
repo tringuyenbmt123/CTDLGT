@@ -289,7 +289,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int& soLuongSinhVien) //  ---------- Má
             formChu(hoCanTim);
 
             // --- sap xep thá»­
-            // quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
+             quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
 
             //-------------------
 

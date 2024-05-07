@@ -70,7 +70,7 @@ SV nhapThongTinSinhVien()
     cout << "\n\t- Nhap lop cua SV: ";
     getline(cin, sv.lop);
     formMssv(sv.lop);
-    cout << "\n\t- Nhap diem sinh cua SV: ";
+    cout << "\n\t- Nhap diem cua SV: ";
     cin >> sv.diem;
 
     return sv;
@@ -188,5 +188,36 @@ void xuatDSLKVong(LIST_VONG &listVong)
             xuat(p->data);
             p = p->pNext_Vong;
         } while (p != listVong.pTail_Vong->pNext_Vong);
+    }
+}
+
+// Ham them vao cuoi
+void themVaoCuoiDSLKKep(LIST_KEP &listKep, pNODE_KEP p)
+{
+    // Danh sach rong
+    if (listKep.pHead_Kep == NULL)
+    {
+        listKep.pHead_Kep = listKep.pTail_Kep = p;
+    }
+    else
+    {
+        listKep.pTail_Kep->pNext_Kep = p;
+        p->pPrev_Kep = listKep.pTail_Kep;
+        listKep.pTail_Kep = p;
+    }
+}
+
+void themSVVaoCuoiDSLKKep(LIST_KEP &listKep, const SV &sv)
+{
+    cout << "\n\t - Them sinh vien tiep theo: ";
+    pNODE_KEP p = khoiTaoNodeKep(sv);
+    themVaoCuoiDSLKKep(listKep, p);
+}
+
+void xuatDanhSachLKKep(LIST_KEP listKep)
+{
+    for (pNODE_KEP p = listKep.pHead_Kep; p != NULL; p = p->pNext_Kep)
+    {
+        xuat(p->data);
     }
 }

@@ -885,6 +885,228 @@ void timKiemSinhVienDanhSachLkVong(LIST_VONG &listVong)
     }
 }
 
+//--------- dslk kép
+void luaChonXuatTenDaoNguocDSLKKep(LIST_KEP &listKep, const string &field, const string &value)
+{
+    int lc;
+    bool backToSearchMenu = false;
+
+    string searchValue;
+    for (char c : value)
+    {
+        if (isalnum(c)) // Kiểm tra xem ký tự có phải là chữ cái hoặc số không
+        {
+            searchValue += tolower(c); // Chuẩn hóa thành chữ thường và thêm vào chuỗi tìm kiếm
+        }
+    }
+
+    // Tạo danh sách liên kết kép để lưu trữ sinh viên thỏa mãn điều kiện
+    LIST_KEP matchedStudents;
+    khoiTaoDSLKKep(matchedStudents);
+
+    for (pNODE_KEP p = listKep.pHead_Kep; p != NULL; p = p->pNext_Kep)
+    {
+        // Chuẩn hóa chuỗi dữ liệu để không phân biệt chữ hoa và chữ thường,
+        // cũng như loại bỏ các ký tự không phải là chữ cái và số
+        string dataValue;
+        for (char c : getValue(p->data, field))
+        {
+            if (isalnum(c)) // Kiểm tra xem ký tự có phải là chữ cái hoặc số không
+            {
+                dataValue += tolower(c); // Chuẩn hóa thành chữ thường và thêm vào chuỗi dữ liệu
+            }
+        }
+
+        if (dataValue == searchValue)
+        {
+            // Nếu sinh viên thỏa mãn điều kiện, thêm vào danh sách liên kết kép
+            pNODE_KEP newNode = khoiTaoNodeKep(p->data);
+            themVaoCuoiDSLKKep(matchedStudents, newNode);
+        }
+    }
+
+    if (matchedStudents.pHead_Kep != NULL)
+    {
+        system("cls");
+        cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?\n";
+        cout << "\t  1. YES\n";
+        cout << "\t  2. NO\n";
+        cout << "\t  3. Quay lai menu tim kiem\n";
+        cout << "\t - Nhap lua chon: ";
+        cin >> lc;
+
+        switch (lc)
+        {
+        case 1:
+            inTieuDe();
+            for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL; p = p->pNext_Kep)
+            {
+                string reversedName = TenDaoNguoc(p->data.ten);
+                string reversedHo = TenDaoNguoc(p->data.ho);
+                cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
+                SET_COLOR(RED);
+                xuat(p->data);
+                SET_COLOR(WHITE);
+            }
+            system("pause");
+            break;
+
+        case 2:
+            inTieuDe();
+            for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL; p = p->pNext_Kep)
+            {
+                SET_COLOR(RED);
+                xuat(p->data);
+                SET_COLOR(WHITE);
+            }
+            system("pause");
+            break;
+
+        case 3:
+            backToSearchMenu = true;
+            break;
+
+        default:
+            break;
+        }
+    }
+    else
+    {
+        cout << "Khong tim thay sinh vien nao thoa man dieu kien tim kiem.\n";
+        system("pause");
+    }
+
+    // Giải phóng bộ nhớ của danh sách liên kết kép matchedStudents
+    for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL;)
+    {
+        pNODE_KEP temp = p;
+        p = p->pNext_Kep;
+        delete temp;
+    }
+}
+
+void timKiemSinhVienDanhSachLKKep(LIST_KEP &listKep)
+{
+    int lc;
+    while (true)
+    {
+        system("cls");
+        cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
+        cout << "\t======================= MENU =======================";
+        cout << "\n\t  1. Tim theo ma sinh vien.";
+        cout << "\n\t  2. Tim theo ho.";
+        cout << "\n\t  3. Tim theo ten.";
+        cout << "\n\t  4. Tim theo lop.";
+        cout << "\n\t  5. Tim theo diem.";
+        cout << "\n\t======================= END =======================";
+        cout << "\n\n\t - Nhap lua chon: ";
+        cin >> lc;
+
+        switch (lc)
+        {
+        case 1:
+        {
+            cin.ignore();
+            cout << "\n\tNhap ma sinh vien can tim : ";
+            string mssvCanTim = "";
+            getline(cin, mssvCanTim);
+            // formMssv(mssvCanTim);
+
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
+            luaChonXuatTenDaoNguocDSLKKep(listKep, "maSV", mssvCanTim);
+
+            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            int tgianTimKiem = duration.count();
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
+
+            system("pause");
+            break;
+        }
+
+        case 2:
+        {
+            cin.ignore();
+            cout << "\n\tNhap ho sinh vien can tim : ";
+            string hoCanTim = "";
+            getline(cin, hoCanTim);
+            // formChu(hoCanTim);
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
+            luaChonXuatTenDaoNguocDSLKKep(listKep, "ho", hoCanTim);
+
+            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            int tgianTimKiem = duration.count();
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
+
+            system("pause");
+            break;
+        }
+
+        case 3:
+        {
+            cin.ignore();
+            cout << "\n\tNhap ten sinh vien can tim : ";
+            string tenCanTim = "";
+            getline(cin, tenCanTim);
+            // formChu(tenCanTim);
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+            luaChonXuatTenDaoNguocDSLKKep(listKep, "ten", tenCanTim);
+
+            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            int tgianTimKiem = duration.count();
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
+
+            system("pause");
+            break;
+        }
+
+        case 4:
+        {
+            cin.ignore();
+            cout << "\n\tNhap lop sinh vien can tim : ";
+            string lopCanTim = "";
+            getline(cin, lopCanTim);
+            // formMssv(lopCanTim);
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+
+            luaChonXuatTenDaoNguocDSLKKep(listKep, "lop", lopCanTim);
+
+            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            int tgianTimKiem = duration.count();
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
+
+            system("pause");
+            break;
+        }
+
+        case 5:
+        {
+            cout << "\n\tNhap diem sinh vien can tim : ";
+            float diemCanTim;
+            cin >> diemCanTim;
+            ostringstream convert;
+            convert << fixed << setprecision(2) << diemCanTim; // Make sure this precision matches what getValue uses
+            string tam = convert.str();
+            auto start = chrono::high_resolution_clock::now(); // Bắt đầu tính thời gian
+            luaChonXuatTenDaoNguocDSLKKep(listKep, "diem", tam);
+
+            auto end = chrono::high_resolution_clock::now();                          // Kết thúc tính thời gian
+            auto duration = chrono::duration_cast<chrono::microseconds>(end - start); // Tính thời gian
+            int tgianTimKiem = duration.count();
+            cout << "\n\t\nTHOI GIAN TIM KIEM : " << tgianTimKiem << endl;
+
+            system("pause");
+            break;
+        }
+        }
+    }
+}
+
 int main()
 {
     // test chuong trinh mảng
@@ -961,29 +1183,94 @@ int main()
     // }
 
     //// test chuong trinh dslk vòng
-    LIST_VONG listVong;
-    khoiTaoDSLK(listVong);
+    // LIST_VONG listVong;
+    // khoiTaoDSLK(listVong);
+
+    //// Danh sách sinh viên được khởi tạo sẵn
+    // SV sv1 = { "N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56 };
+    // SV sv2 = { "N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2 };
+    // SV sv3 = { "N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456 };
+    // SV sv4 = { "N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333 };
+    // SV sv5 = { "N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0 };
+    // SV sv6 = { "N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv7 = { "N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv8 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+    // SV sv9 = { "N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8 };
+
+    // themSVVaoCuoiDSLKVong(listVong, sv1);
+    // themSVVaoCuoiDSLKVong(listVong, sv2);
+    // themSVVaoCuoiDSLKVong(listVong, sv3);
+    // themSVVaoCuoiDSLKVong(listVong, sv4);
+    // themSVVaoCuoiDSLKVong(listVong, sv5);
+    // themSVVaoCuoiDSLKVong(listVong, sv6);
+    // themSVVaoCuoiDSLKVong(listVong, sv7);
+    // themSVVaoCuoiDSLKVong(listVong, sv8);
+    // themSVVaoCuoiDSLKVong(listVong, sv9);
+
+    // int choice;
+    // while (true)
+    //{
+    //     system("cls");
+    //     cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
+    //     cout << "\t======================= MENU =======================";
+    //     cout << "\n\t  1. Them sinh vien.";
+    //     cout << "\n\t  2. Tim kiem sinh vien.";
+    //     cout << "\n\t  3. Xuat danh sach.";
+    //     cout << "\n\t======================= END =======================";
+    //     cout << "\n\n\t - Nhap lua chon: ";
+    //     cin >> choice;
+
+    //    switch (choice)
+    //    {
+    //    case 1:
+    //    {
+    //        themSVVaoCuoiDSLKVong(listVong, nhapThongTinSinhVien());
+    //        break;
+    //    }
+
+    //    case 2:
+    //    {
+    //        timKiemSinhVienDanhSachLkVong(listVong);
+    //        break;
+    //    }
+
+    //    case 3:
+    //    {
+    //        inTieuDe();
+    //        xuatDSLKVong(listVong);
+    //        system("pause");
+    //        break;
+    //    }
+
+    //    default:
+    //        break;
+    //    }
+    //}
+
+    // test chuong trinh dslk vòng
+    LIST_KEP listKep;
+    khoiTaoDSLKKep(listKep);
 
     // Danh sách sinh viên được khởi tạo sẵn
-    SV sv1 = {"N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56};
+    SV sv1 = {"N22DCPT001", "Hung", "An", "D22CQPT01-N", 8.56};
     SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
     SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
     SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
-    SV sv5 = {"N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0};
+    SV sv5 = {"N22DCAT037", "Nguyen", "Binh", "D22CQAT01-N", 5.0};
     SV sv6 = {"N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8};
     SV sv7 = {"N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8};
     SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
     SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
 
-    themSVVaoCuoiDSLKVong(listVong, sv1);
-    themSVVaoCuoiDSLKVong(listVong, sv2);
-    themSVVaoCuoiDSLKVong(listVong, sv3);
-    themSVVaoCuoiDSLKVong(listVong, sv4);
-    themSVVaoCuoiDSLKVong(listVong, sv5);
-    themSVVaoCuoiDSLKVong(listVong, sv6);
-    themSVVaoCuoiDSLKVong(listVong, sv7);
-    themSVVaoCuoiDSLKVong(listVong, sv8);
-    themSVVaoCuoiDSLKVong(listVong, sv9);
+    themSVVaoCuoiDSLKKep(listKep, sv1);
+    themSVVaoCuoiDSLKKep(listKep, sv2);
+    themSVVaoCuoiDSLKKep(listKep, sv3);
+    themSVVaoCuoiDSLKKep(listKep, sv4);
+    themSVVaoCuoiDSLKKep(listKep, sv5);
+    themSVVaoCuoiDSLKKep(listKep, sv6);
+    themSVVaoCuoiDSLKKep(listKep, sv7);
+    themSVVaoCuoiDSLKKep(listKep, sv8);
+    themSVVaoCuoiDSLKKep(listKep, sv9);
 
     int choice;
     while (true)
@@ -1002,20 +1289,21 @@ int main()
         {
         case 1:
         {
-            themSVVaoCuoiDSLKVong(listVong, nhapThongTinSinhVien());
+            themSVVaoCuoiDSLKKep(listKep, nhapThongTinSinhVien());
             break;
         }
 
         case 2:
         {
-            timKiemSinhVienDanhSachLkVong(listVong);
+            timKiemSinhVienDanhSachLKKep(listKep);
+            system("pause");
             break;
         }
 
         case 3:
         {
             inTieuDe();
-            xuatDSLKVong(listVong);
+            xuatDanhSachLKKep(listKep);
             system("pause");
             break;
         }

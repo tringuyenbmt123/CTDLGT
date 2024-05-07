@@ -37,7 +37,7 @@ enum class Field
     Diem
 };
 template <typename T>
-T getValue(const SV& sv, const string& field)
+T getValue(const SV &sv, const string &field)
 {
     if (field == "maSV")
         return sv.maSV;
@@ -52,7 +52,7 @@ T getValue(const SV& sv, const string& field)
     throw invalid_argument("Field name is invalid");
 }
 
-string getValue(const SV& sv, const string& field)
+string getValue(const SV &sv, const string &field)
 {
     std::ostringstream stream;
     if (field == "maSV")
@@ -72,7 +72,7 @@ string getValue(const SV& sv, const string& field)
 }
 
 template <typename T>
-int Binary_Search(SV listMang[], int left, int right, const T& x, const string& input)
+int Binary_Search(SV listMang[], int left, int right, const T &x, const string &input)
 {
     if (left > right)
     {
@@ -100,7 +100,7 @@ int Binary_Search(SV listMang[], int left, int right, const T& x, const string& 
 }
 
 template <typename T2>
-vector<int> Linear_Search_Substring(SV listMang[], int size, const T2& substring, const string& field)
+vector<int> Linear_Search_Substring(SV listMang[], int size, const T2 &substring, const string &field)
 {
     vector<int> indices;
     for (int i = 0; i < size; ++i)
@@ -116,7 +116,7 @@ vector<int> Linear_Search_Substring(SV listMang[], int size, const T2& substring
 }
 
 // quick sort
-void quickSort(SV a[], int l, int r, const string& input)
+void quickSort(SV a[], int l, int r, const string &input)
 {
 
     string midValue = getValue(a[(l + r) / 2], input);
@@ -162,7 +162,7 @@ string TenDaoNguoc(string str)
 }
 
 // ------------- mảng
-void luaChonXuatTenDaoNguocMang(SV LIST_MANG[], int& soLuongSinhVien, const vector<int>& foundIndices, int& index, int thoiGianTimKiem)
+void luaChonXuatTenDaoNguocMang(SV LIST_MANG[], int &soLuongSinhVien, const vector<int> &foundIndices, int &index, int thoiGianTimKiem)
 {
     int lc;
     bool backToSearchMenu = false; // Biến để kiểm tra liệu người dùng muốn quay lại menu tìm kiếm ban đầu hay không
@@ -224,7 +224,7 @@ void luaChonXuatTenDaoNguocMang(SV LIST_MANG[], int& soLuongSinhVien, const vect
 }
 
 //----------------
-void timKiemSinhVienMang(SV LIST_MANG[], int& soLuongSinhVien) //  ---------- MẢNG
+void timKiemSinhVienMang(SV LIST_MANG[], int &soLuongSinhVien) //  ---------- MẢNG
 {
     int lc;
     // int tgianTimKiem;
@@ -289,7 +289,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int& soLuongSinhVien) //  ---------- M�
             formChu(hoCanTim);
 
             // --- sap xep thử
-             quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
+            quickSort(LIST_MANG, 0, soLuongSinhVien - 1, "ho");
 
             //-------------------
 
@@ -458,7 +458,7 @@ void timKiemSinhVienMang(SV LIST_MANG[], int& soLuongSinhVien) //  ---------- M�
 //----------------- Phần thêm SV vào cuối
 
 //--------- dslk đơn
-void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const string& value)
+void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const string &value)
 {
     int lc;
     bool backToSearchMenu = false;
@@ -478,7 +478,7 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
         case 1:
         {
             inTieuDe();
-            node_Don* p = NULL;
+            node_Don *p = NULL;
 
             p = listDon.pHead_Don;
             while (p != NULL)
@@ -494,7 +494,6 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
                     xuat(p->data);
                     SET_COLOR(WHITE);
                 }
-
 
                 if (getValue(p->data, field) == value && field != "ho")
                 {
@@ -516,13 +515,13 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
         case 2:
         {
             inTieuDe();
-            node_Don* p = NULL;
+            node_Don *p = NULL;
 
             p = listDon.pHead_Don;
             while (p != NULL)
             {
 
-                if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
+                if (getValue(p->data, field).find(value) != std::string::npos && field == "ho")
                 {
 
                     SET_COLOR(RED);
@@ -530,7 +529,7 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
                     SET_COLOR(WHITE);
                 }
 
-                  if (getValue(p->data, field) == value && field != "ho")
+                if (getValue(p->data, field) == value && field != "ho")
                 {
 
                     SET_COLOR(RED);
@@ -557,7 +556,7 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string& field, const 
     }
 }
 
-void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon)
+void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
 {
     int lc;
     while (true)
@@ -679,7 +678,7 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON& listDon)
     }
 }
 
-void themSinhVienVaoDanhSachLKDon(LIST_DON& listDon, SV sv)
+void themSinhVienVaoDanhSachLKDon(LIST_DON &listDon, SV sv)
 {
     pNODE_DON p = khoiTaoNodeDon(sv);
     if (listDon.pHead_Don == NULL)
@@ -693,9 +692,8 @@ void themSinhVienVaoDanhSachLKDon(LIST_DON& listDon, SV sv)
     }
 }
 
-
 //--------- dslk vòng
-void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, const string& value)
+void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG &listVong, const string &field, const string &value)
 {
     int lc;
     bool backToSearchMenu = false;
@@ -715,23 +713,11 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
         case 1:
         {
             inTieuDe();
-            node_Vong* p = NULL;
-
+            node_Vong *p = NULL;
             p = listVong.pTail_Vong;
-            while (p != NULL)
+            do
             {
-                if (getValue(p->data, field) == value && field !="ho")
-                {
-
-                    string reversedName = TenDaoNguoc(p->data.ten);
-                    string reversedHo = TenDaoNguoc(p->data.ho);
-                    cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
-                    SET_COLOR(RED);
-                    xuat(p->data);
-                    SET_COLOR(WHITE);
-                }
-
-                  if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
+                if (getValue(p->data, field) == value)
                 {
                     string reversedName = TenDaoNguoc(p->data.ten);
                     string reversedHo = TenDaoNguoc(p->data.ho);
@@ -740,12 +726,8 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
                     xuat(p->data);
                     SET_COLOR(WHITE);
                 }
-
-                
-
                 p = p->pNext_Vong;
-            }
-
+            } while (p != listVong.pTail_Vong);
             system("pause");
             break;
         }
@@ -753,30 +735,18 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
         case 2:
         {
             inTieuDe();
-            node_Vong* p = NULL;
-
+            node_Vong *p = NULL;
             p = listVong.pTail_Vong;
-            while (p != NULL)
+            do
             {
-                if (getValue(p->data, field) == value && field !="ho")
+                if (getValue(p->data, field) == value)
                 {
                     SET_COLOR(RED);
-
                     xuat(p->data);
                     SET_COLOR(WHITE); // Thay WHITE bằng mã màu mặc định của bạn
                 }
-
-                  if (getValue(p->data, field).find(value) != std::string::npos && field =="ho")
-                {
-
-                    SET_COLOR(RED);
-                    xuat(p->data);
-                    SET_COLOR(WHITE);
-                }
-
                 p = p->pNext_Vong;
-            }
-
+            } while (p != listVong.pTail_Vong);
             system("pause");
             break;
         }
@@ -793,7 +763,7 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG listVong, const string& field, con
     }
 }
 
-void timKiemSinhVienDanhSachLkVong(LIST_VONG& listVong)
+void timKiemSinhVienDanhSachLkVong(LIST_VONG &listVong)
 {
     int lc;
     while (true)
@@ -915,20 +885,6 @@ void timKiemSinhVienDanhSachLkVong(LIST_VONG& listVong)
     }
 }
 
-void themSinhVienVaoDanhSachLKVong(LIST_VONG& listVong, SV sv)
-{
-    pNODE_VONG p = khoiTaoNodeVong(sv);
-    if (listVong.pTail_Vong == NULL)
-    {
-        listVong.pTail_Vong = p;
-    }
-    else
-    {
-        p->pNext_Vong = listVong.pTail_Vong;
-        listVong.pTail_Vong = p;
-    }
-}
-
 int main()
 {
     // test chuong trinh mảng
@@ -1002,41 +958,42 @@ int main()
     //     default:
     //         break;
     //     }
-   // }
+    // }
 
-     //// test chuong trinh dslk vòng
-     LIST_VONG listVong;
-     khoiTaoDSLK(listVong);
+    //// test chuong trinh dslk vòng
+    LIST_VONG listVong;
+    khoiTaoDSLK(listVong);
 
-     // Danh sách sinh viên được khởi tạo sẵn
-     SV sv1 = {"N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56};
-     SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
-     SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
-     SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
-     SV sv5 = {"N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0};
-     SV sv6 = {"N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8};
-     SV sv7 = {"N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8};
-     SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
-     SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    // Danh sách sinh viên được khởi tạo sẵn
+    SV sv1 = {"N22DCPT001", "Nguyen Van", "An", "D22CQPT01-N", 8.56};
+    SV sv2 = {"N22DCPT007", "Le", "Binh", "D22CQCN02-N", 7.2};
+    SV sv3 = {"N22DCCN112", "Lenh", "Gioi", "D22CQAT01-N", 9.123456};
+    SV sv4 = {"N22DCAT022", "La", "Binh", "D22CQCN02-N", 8.333};
+    SV sv5 = {"N22DCAT037", "Nguyen", "Cu", "D22CQAT01-N", 5.0};
+    SV sv6 = {"N22DCAT043", "Ti", "Cuong", "D22CQCN02-N", 8};
+    SV sv7 = {"N22DCAT043", "Tih", "Cuong", "D22CQCN02-N", 8};
+    SV sv8 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
+    SV sv9 = {"N22DCAT043", "Tinh", "Cuong", "D22CQCN02-N", 8};
 
-     themSinhVienVaoDanhSachLKVong(listVong, sv1);
-     themSinhVienVaoDanhSachLKVong(listVong, sv2);
-     themSinhVienVaoDanhSachLKVong(listVong, sv3);
-     themSinhVienVaoDanhSachLKVong(listVong, sv4);
-     themSinhVienVaoDanhSachLKVong(listVong, sv5);
-     themSinhVienVaoDanhSachLKVong(listVong, sv6);
-     themSinhVienVaoDanhSachLKVong(listVong, sv7);
-     themSinhVienVaoDanhSachLKVong(listVong, sv8);
-     themSinhVienVaoDanhSachLKVong(listVong, sv9);
+    themSVVaoCuoiDSLKVong(listVong, sv1);
+    themSVVaoCuoiDSLKVong(listVong, sv2);
+    themSVVaoCuoiDSLKVong(listVong, sv3);
+    themSVVaoCuoiDSLKVong(listVong, sv4);
+    themSVVaoCuoiDSLKVong(listVong, sv5);
+    themSVVaoCuoiDSLKVong(listVong, sv6);
+    themSVVaoCuoiDSLKVong(listVong, sv7);
+    themSVVaoCuoiDSLKVong(listVong, sv8);
+    themSVVaoCuoiDSLKVong(listVong, sv9);
 
-     int choice;
-     while (true)
-     {
+    int choice;
+    while (true)
+    {
         system("cls");
         cout << "\n\n\t\t=== CHUONG TRINH QUAN LY SINH VIEN ===\n\n";
         cout << "\t======================= MENU =======================";
         cout << "\n\t  1. Them sinh vien.";
         cout << "\n\t  2. Tim kiem sinh vien.";
+        cout << "\n\t  3. Xuat danh sach.";
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> choice;
@@ -1045,9 +1002,7 @@ int main()
         {
         case 1:
         {
-            SV newSV = nhapThongTinSinhVien();
-
-            themSinhVienVaoDanhSachLKVong(listVong, newSV);
+            themSVVaoCuoiDSLKVong(listVong, nhapThongTinSinhVien());
             break;
         }
 
@@ -1059,6 +1014,7 @@ int main()
 
         case 3:
         {
+            inTieuDe();
             xuatDSLKVong(listVong);
             system("pause");
             break;
@@ -1067,7 +1023,7 @@ int main()
         default:
             break;
         }
-     }
+    }
     return 0;
 }
 

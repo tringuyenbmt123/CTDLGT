@@ -165,25 +165,28 @@ void themVaoCuoiDSLKVong(LIST_VONG &listVong, pNODE_VONG p)
     }
 }
 
-void themSVVaoCuoiDSLKVong(LIST_VONG &listVong)
+void themSVVaoCuoiDSLKVong(LIST_VONG &listVong, const SV &sv)
 {
     cout << "\n\t - Them sinh vien tiep theo: ";
-    SV sv = nhapThongTinSinhVien();
     pNODE_VONG p = new NODE_VONG;
+    if (p == nullptr)
+    {
+        throw std::bad_alloc();
+    }
     p->data = sv;
     p->pNext_Vong = NULL;
     themVaoCuoiDSLKVong(listVong, p);
 }
 
-void xuatDSLKVong(LIST_VONG listVong)
+void xuatDSLKVong(LIST_VONG &listVong)
 {
-    if (listVong.pTail_Vong != NULL)
+    if (listVong.pTail_Vong != nullptr)
     {
-        pNODE_VONG p = listVong.pTail_Vong->pNext_Vong; // Bắt đầu duyệt từ phần tử đầu tiên
+        pNODE_VONG p = listVong.pTail_Vong->pNext_Vong;
         do
         {
             xuat(p->data);
             p = p->pNext_Vong;
-        } while (p != listVong.pTail_Vong->pNext_Vong); // Duyệt từ đầu đến cuối danh sách
+        } while (p != listVong.pTail_Vong->pNext_Vong);
     }
 }

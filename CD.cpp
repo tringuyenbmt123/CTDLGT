@@ -1,5 +1,6 @@
 ﻿#include <sstream>
 #include <vector>
+#include <cstdlib>
 
 #include "danh_sach_lien_ket_don.h"
 #include "danh_sach_lien_ket_kep.h"
@@ -556,10 +557,23 @@ void luaChonXuatTenDaoNguocDSLKDon(LIST_DON listDon, const string &field, const 
     }
 }
 
+void giaiPhongBoNhoDSLKDon(LIST_DON &listDon)
+{
+    pNODE_DON p = listDon.pHead_Don;
+    while (p != NULL)
+    {
+        pNODE_DON temp = p;
+        p = p->pNext_Don;
+        delete temp;
+    }
+    listDon.pHead_Don = NULL; // Đảm bảo danh sách rỗng
+}
+
 void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
 {
     int lc;
-    while (true)
+    bool backToMainMenu = false;
+    while (!backToMainMenu)
     {
         system("cls");
         cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
@@ -569,6 +583,8 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
         cout << "\n\t  3. Tim theo ten.";
         cout << "\n\t  4. Tim theo lop.";
         cout << "\n\t  5. Tim theo diem.";
+        cout << "\n\t  6. Quay lai.";
+        cout << "\n\t  7. Thoat.";
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> lc;
@@ -674,6 +690,19 @@ void timKiemSinhVienDanhSachLkDon(LIST_DON &listDon)
             system("pause");
             break;
         }
+
+        case 6:
+        {
+            backToMainMenu = true;
+            break;
+        }
+
+        case 7:
+        {
+            giaiPhongBoNhoDSLKDon(listDon);
+            cout << "\n\t == KET THUC CHUONG TRINH ==\n";
+            exit(0);
+        }
         }
     }
 }
@@ -772,10 +801,26 @@ void luaChonXuatTenDaoNguocDSLKVong(LIST_VONG &listVong, const string &field, co
     }
 }
 
+void giaiPhongBoNhoDSLKVong(LIST_VONG &listVong)
+{
+    if (listVong.pTail_Vong != NULL)
+    {
+        pNODE_VONG p = listVong.pTail_Vong->pNext_Vong; // Bắt đầu từ phần tử đầu tiên
+        while (p != NULL)
+        {
+            pNODE_VONG temp = p;
+            p = p->pNext_Vong;
+            delete temp; // Giải phóng bộ nhớ cho từng phần tử
+        }
+        listVong.pTail_Vong = NULL; // Đảm bảo rằng pTail trỏ đến NULL sau khi giải phóng
+    }
+}
+
 void timKiemSinhVienDanhSachLkVong(LIST_VONG &listVong)
 {
     int lc;
-    while (true)
+    bool backToMainMenu = false;
+    while (!backToMainMenu)
     {
         system("cls");
         cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
@@ -785,6 +830,8 @@ void timKiemSinhVienDanhSachLkVong(LIST_VONG &listVong)
         cout << "\n\t  3. Tim theo ten.";
         cout << "\n\t  4. Tim theo lop.";
         cout << "\n\t  5. Tim theo diem.";
+        cout << "\n\t  6. Quay lai.";
+        cout << "\n\t  7. Thoat.";
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> lc;
@@ -890,110 +937,24 @@ void timKiemSinhVienDanhSachLkVong(LIST_VONG &listVong)
             system("pause");
             break;
         }
+
+        case 6:
+        {
+            backToMainMenu = true;
+            break;
+        }
+
+        case 7:
+        {
+            giaiPhongBoNhoDSLKVong(listVong);
+            cout << "\n\t == KET THUC CHUONG TRINH ==\n";
+            exit(0);
+        }
         }
     }
 }
 
 //--------- dslk kép
-// void luaChonXuatTenDaoNguocDSLKKep(LIST_KEP &listKep, const string &field, const string &value)
-// {
-//     int lc;
-//     bool backToSearchMenu = false;
-
-//     // string searchValue;
-//     // for (char c : value)
-//     // {
-//     //     if (isalnum(c)) // Kiểm tra xem ký tự có phải là chữ cái hoặc số không
-//     //     {
-//     //         searchValue += tolower(c); // Chuẩn hóa thành chữ thường và thêm vào chuỗi tìm kiếm
-//     //     }
-//     // }
-
-//     // Tạo danh sách liên kết kép để lưu trữ sinh viên thỏa mãn điều kiện
-//     LIST_KEP matchedStudents;
-//     khoiTaoDSLKKep(matchedStudents);
-
-//     for (pNODE_KEP p = listKep.pHead_Kep; p != NULL; p = p->pNext_Kep)
-//     {
-//         // Chuẩn hóa chuỗi dữ liệu để không phân biệt chữ hoa và chữ thường,
-//         // cũng như loại bỏ các ký tự không phải là chữ cái và số
-//         // string dataValue;
-//         // for (char c : getValue(p->data, field))
-//         // {
-//         //     if (isalnum(c)) // Kiểm tra xem ký tự có phải là chữ cái hoặc số không
-//         //     {
-//         //         dataValue += tolower(c); // Chuẩn hóa thành chữ thường và thêm vào chuỗi dữ liệu
-//         //     }
-//         // }
-
-//        /* if (dataValue == searchValue)
-//         {*/
-//             // Nếu sinh viên thỏa mãn điều kiện, thêm vào danh sách liên kết kép
-//             pNODE_KEP newNode = khoiTaoNodeKep(p->data);
-//             themVaoCuoiDSLKKep(matchedStudents, newNode);
-//         //}
-//     }
-
-//     if (matchedStudents.pHead_Kep != NULL)
-//     {
-//         system("cls");
-//         cout << "\tDa tim thay thong tin sinh vien. Ban co muon xuat ten dao nguoc khong?\n";
-//         cout << "\t  1. YES\n";
-//         cout << "\t  2. NO\n";
-//         cout << "\t  3. Quay lai menu tim kiem\n";
-//         cout << "\t - Nhap lua chon: ";
-//         cin >> lc;
-
-//         switch (lc)
-//         {
-//         case 1:
-//             inTieuDe();
-//             for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL; p = p->pNext_Kep)
-//             {
-//                 string reversedName = TenDaoNguoc(p->data.ten);
-//                 string reversedHo = TenDaoNguoc(p->data.ho);
-//                 cout << "Ten dao nguoc: " << reversedName << " " << reversedHo << endl;
-//                 SET_COLOR(RED);
-//                 xuat(p->data);
-//                 SET_COLOR(WHITE);
-//             }
-//             system("pause");
-//             break;
-
-//         case 2:
-//             inTieuDe();
-//             for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL; p = p->pNext_Kep)
-//             {
-//                 SET_COLOR(RED);
-//                 xuat(p->data);
-//                 SET_COLOR(WHITE);
-//             }
-//             system("pause");
-//             break;
-
-//         case 3:
-//             backToSearchMenu = true;
-//             break;
-
-//         default:
-//             break;
-//         }
-//     }
-//     else
-//     {
-//         cout << "Khong tim thay sinh vien nao thoa man dieu kien tim kiem.\n";
-//         system("pause");
-//     }
-
-//     // Giải phóng bộ nhớ của danh sách liên kết kép matchedStudents
-//     for (pNODE_KEP p = matchedStudents.pHead_Kep; p != NULL;)
-//     {
-//         pNODE_KEP temp = p;
-//         p = p->pNext_Kep;
-//         delete temp;
-//     }
-// }
-
 void luaChonXuatTenDaoNguocDSLKKep(LIST_KEP &listKep, const string &field, const string &value)
 {
     int lc;
@@ -1085,10 +1046,23 @@ void luaChonXuatTenDaoNguocDSLKKep(LIST_KEP &listKep, const string &field, const
     }
 }
 
+void giaiPhongBoNhoDSLKKep(LIST_KEP &listKep)
+{
+    pNODE_KEP p = listKep.pHead_Kep;
+    while (p != NULL)
+    {
+        pNODE_KEP temp = p;
+        p = p->pNext_Kep;
+        delete temp;
+    }
+    listKep.pHead_Kep = listKep.pTail_Kep = NULL; // Đảm bảo danh sách đã được giải phóng
+}
+
 void timKiemSinhVienDanhSachLKKep(LIST_KEP &listKep)
 {
     int lc;
-    while (true)
+    bool backToMainMenu = false;
+    while (!backToMainMenu)
     {
         system("cls");
         cout << "\n\n\t\t=== CHUONG TRINH TIM KIEM SINH VIEN ===\n\n";
@@ -1098,6 +1072,8 @@ void timKiemSinhVienDanhSachLKKep(LIST_KEP &listKep)
         cout << "\n\t  3. Tim theo ten.";
         cout << "\n\t  4. Tim theo lop.";
         cout << "\n\t  5. Tim theo diem.";
+        cout << "\n\t  6. Quay lai.";
+        cout << "\n\t  7. Thoat.";
         cout << "\n\t======================= END =======================";
         cout << "\n\n\t - Nhap lua chon: ";
         cin >> lc;
@@ -1202,6 +1178,19 @@ void timKiemSinhVienDanhSachLKKep(LIST_KEP &listKep)
 
             system("pause");
             break;
+        }
+
+        case 6:
+        {
+            backToMainMenu = true;
+            break;
+        }
+
+        case 7:
+        {
+            giaiPhongBoNhoDSLKKep(listKep);
+            cout << "\n\t == KET THUC CHUONG TRINH ==\n";
+            exit(0);
         }
         }
     }
